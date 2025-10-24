@@ -6,6 +6,7 @@ import '../../../shared/components/iam/logo_widget.dart';
 import '../../../shared/components/iam/auth_form.dart';
 import 'login_page.dart';
 import 'home_page.dart';
+import 'welcome_page.dart';
 
 class RegisterPage extends ConsumerStatefulWidget {
   const RegisterPage({super.key});
@@ -46,6 +47,18 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const WelcomePage()));
+          },
+          tooltip: 'Back',
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Center(
