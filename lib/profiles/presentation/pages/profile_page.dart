@@ -6,6 +6,9 @@ import 'package:levelup_journey/shared/services/cloudinary_service.dart';
 import '../../domain/entities/profile.dart';
 import '../controllers/profile_state.dart';
 import '../controllers/providers.dart';
+import '../components/profile_image_widget.dart';
+import '../components/profile_form_widget.dart';
+import '../components/save_profile_button.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -42,24 +45,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     _lastNameController.dispose();
     _profileUrlController.dispose();
     super.dispose();
-  }
-
-  Future<void> _pickAndUploadImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      try {
-        final imageUrl = await _cloudinaryService.uploadImage(image.path);
-        if (!mounted) return;
-        setState(() {
-          _profileUrlController.text = imageUrl;
-        });
-      } catch (e) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to upload image: $e')),
-        );
-      }
-    }
   }
 
   Future<void> _saveProfile() async {
@@ -112,88 +97,28 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 : profileState.profile != null
                     ? SingleChildScrollView(
                         padding: const EdgeInsets.all(16.0),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              const SizedBox(height: 20),
-                              Center(
-                                child: Stack(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 50,
-                                      backgroundImage: _profileUrlController.text.isNotEmpty
-                                          ? NetworkImage(_profileUrlController.text)
-                                          : null,
-                                      child: _profileUrlController.text.isEmpty
-                                          ? const Icon(Icons.person, size: 50)
-                                          : null,
-                                    ),
-                                    Positioned(
-                                      bottom: 0,
-                                      right: 0,
-                                      child: IconButton(
-                                        icon: const Icon(Icons.camera_alt),
-                                        onPressed: _pickAndUploadImage,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              TextFormField(
-                                controller: _usernameController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Username',
-                                  prefixIcon: Icon(Icons.person_outline),
-                                  border: OutlineInputBorder(),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your username';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 16),
-                              TextFormField(
-                                controller: _firstNameController,
-                                decoration: const InputDecoration(
-                                  labelText: 'First Name',
-                                  prefixIcon: Icon(Icons.badge_outlined),
-                                  border: OutlineInputBorder(),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your first name';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 16),
-                              TextFormField(
-                                controller: _lastNameController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Last Name',
-                                  prefixIcon: Icon(Icons.badge_outlined),
-                                  border: OutlineInputBorder(),
-                                ),
-                              ),
-                              const SizedBox(height: 30),
-                              ElevatedButton.icon(
-                                onPressed: profileState.loading ? null : _saveProfile,
-                                icon: const Icon(Icons.save_alt_outlined),
-                                label: profileState.loading
-                                    ? const CircularProgressIndicator(color: Colors.white)
-                                    : const Text('Save Changes'),
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 15),
-                                  textStyle: Theme.of(context).textTheme.labelLarge,
-                                ),
-                              ),
-                            ],
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const SizedBox(height: 20),
+                            ProfileImageWidget(
+                              profileUrlController: _profileUrlController,
+                              picker: _picker,
+                              cloudinaryService: _cloudinaryService,
+                            ),
+                            const SizedBox(height: 20),
+                            ProfileFormWidget(
+                              formKey: _formKey,
+                              usernameController: _usernameController,
+                              firstNameController: _firstNameController,
+                              lastNameController: _lastNameController,
+                            ),
+                            const SizedBox(height: 30),
+                            SaveProfileButton(
+                              isLoading: profileState.loading,
+                              onPressed: _saveProfile,
+                            ),
+                          ],
                         ),
                       )
                     : const Text('No profile data.'),

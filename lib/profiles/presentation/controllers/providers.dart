@@ -3,7 +3,7 @@ import '../../../iam/presentation/controllers/providers.dart';
 import '../../application/use_cases/get_profile_use_case.dart';
 import '../../application/use_cases/update_profile_use_case.dart';
 import '../../domain/repositories/profile_repository.dart';
-import '../../infrastructure/repositories/rest_profile_repository.dart';
+import '../../infrastructure/repositories_impl/rest_profile_repository.dart';
 import 'profile_controller.dart';
 import 'profile_state.dart';
 

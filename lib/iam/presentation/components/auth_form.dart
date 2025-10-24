@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../ui/primary_button.dart';
+import '../../../shared/components/ui/primary_button.dart';
 
 typedef SubmitCallback = void Function();
 
