@@ -1,8 +1,8 @@
 // iam/presentation/pages/home_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../controllers/providers.dart';
-import 'login_page.dart';
+import '../../../iam/presentation/controllers/providers.dart';
+import '../../../iam/presentation/pages/login_page.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -13,23 +13,6 @@ class HomePage extends ConsumerWidget {
     final authNotifier = ref.read(authControllerProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Inicio'),
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              authNotifier.logout();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const LoginPage()),
-              );
-            },
-            tooltip: 'Cerrar sesión',
-          ),
-        ],
-      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Center(
@@ -39,11 +22,10 @@ class HomePage extends ConsumerWidget {
               const Icon(
                 Icons.check_circle,
                 size: 80,
-                color: Colors.green,
               ),
               const SizedBox(height: 24),
               const Text(
-                '¡Bienvenido!',
+                'Welcome!',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -52,10 +34,9 @@ class HomePage extends ConsumerWidget {
               const SizedBox(height: 16),
               if (authState.user != null) ...[
                 Text(
-                  'Usuario: ${authState.user!.email.value}',
+                  'User: ${authState.user!.email.value}',
                   style: const TextStyle(
                     fontSize: 18,
-                    color: Colors.grey,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -64,18 +45,27 @@ class HomePage extends ConsumerWidget {
                   'ID: ${authState.user!.id}',
                   style: const TextStyle(
                     fontSize: 14,
-                    color: Colors.grey,
                   ),
                 ),
               ],
               const SizedBox(height: 32),
               const Text(
-                'Has iniciado sesión correctamente',
+                'You have successfully signed in',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey,
                 ),
                 textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: () {
+                  authNotifier.logout();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const LoginPage()),
+                  );
+                },
+                child: const Text('Sign out'),
               ),
             ],
           ),

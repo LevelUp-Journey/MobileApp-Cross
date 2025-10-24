@@ -1,21 +1,19 @@
 // iam/infrastructure/repositories_impl/rest_auth_repository.dart
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import '../../../shared/services/base_service.dart';
+import '../../../shared/environments/environment.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/value_objects/email.dart';
 import '../../domain/value_objects/password.dart';
 
-class RestAuthRepository implements AuthRepository {
-  final http.Client client;
-  final String baseUrl;
-
-  RestAuthRepository(this.client, {required this.baseUrl});
+class RestAuthRepository extends BaseService implements AuthRepository {
+  RestAuthRepository(super.client, {required super.baseUrl});
 
   @override
   Future<User> signUp(Email email, Password password) async {
     final resp = await client.post(
-      Uri.parse('$baseUrl/api/v1/authentication/sign-up'),
+      buildUri(Environment.signUpEndpoint),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'email': email.value,
@@ -51,7 +49,7 @@ class RestAuthRepository implements AuthRepository {
   @override
   Future<User> signIn(Email email, Password password) async {
     final resp = await client.post(
-      Uri.parse('$baseUrl/api/v1/authentication/sign-in'),
+      buildUri(Environment.signInEndpoint),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'email': email.value,
@@ -87,7 +85,7 @@ class RestAuthRepository implements AuthRepository {
   @override
   Future<User> validateToken(String token) async {
     final resp = await client.get(
-      Uri.parse('$baseUrl/api/v1/authentication/validate'),
+      buildUri(Environment.validateTokenEndpoint),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -119,7 +117,7 @@ class RestAuthRepository implements AuthRepository {
   @override
   Future<User> refreshToken(String refreshToken) async {
     final resp = await client.post(
-      Uri.parse('$baseUrl/api/v1/authentication/refresh'),
+      buildUri(Environment.refreshTokenEndpoint),
       headers: {
         'Content-Type': 'application/json',
         'refresh_token': refreshToken,
