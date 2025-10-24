@@ -14,6 +14,7 @@ class HeaderWidget extends StatelessWidget implements PreferredSizeWidget {
   final Color backgroundColor;
   final double height;
   final EdgeInsetsGeometry padding;
+  final VoidCallback? onLeadingTap;
 
   const HeaderWidget({
     super.key,
@@ -25,6 +26,7 @@ class HeaderWidget extends StatelessWidget implements PreferredSizeWidget {
     this.backgroundColor = Colors.white,
     this.height = 64,
     this.padding = const EdgeInsets.symmetric(horizontal: 16.0),
+    this.onLeadingTap,
   });
 
   @override
@@ -33,7 +35,7 @@ class HeaderWidget extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final leadingWidget = showLeading
-        ? (leading ?? const _DefaultLeading())
+        ? (leading ?? _DefaultLeading(onTap: onLeadingTap))
         : const SizedBox.shrink();
 
     final trailingWidget = trailing ?? const _DefaultTrailing();
@@ -83,18 +85,19 @@ class HeaderWidget extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class _DefaultLeading extends StatelessWidget {
-  const _DefaultLeading();
+  final VoidCallback? onTap;
+
+  const _DefaultLeading({this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: 18,
-      backgroundColor: Colors.purple.shade50,
-      child: Icon(
+    return IconButton(
+      onPressed: onTap,
+      icon: const Icon(
         Icons.person,
-        color: Colors.purple.shade700,
-        size: 20,
+        color: Colors.black,
       ),
+      tooltip: 'Profile',
     );
   }
 }
