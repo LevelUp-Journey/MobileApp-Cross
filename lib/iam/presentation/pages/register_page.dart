@@ -5,7 +5,7 @@ import '../controllers/providers.dart';
 import '../../../shared/components/iam/logo_widget.dart';
 import '../../../shared/components/iam/auth_form.dart';
 // import 'login_page.dart'; // switched link hidden in auth form
-import 'home_page.dart';
+import '../../../public/pages/home/home_page.dart';
 import 'welcome_page.dart';
 
 class RegisterPage extends ConsumerStatefulWidget {

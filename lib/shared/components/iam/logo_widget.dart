@@ -12,7 +12,7 @@ class LogoWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Image.asset(
-          'lib/assets/level-cat-logo.png',
+          'assets/level-cat-logo.png',
           width: size,
           height: size,
           fit: BoxFit.contain,

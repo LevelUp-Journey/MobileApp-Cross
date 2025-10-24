@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controllers/providers.dart';
 import '../../../shared/components/iam/logo_widget.dart';
 import '../../../shared/components/iam/auth_form.dart';
-import 'home_page.dart';
+import '../../../public/pages/home/home_page.dart';
 import 'welcome_page.dart';
 
 class LoginPage extends ConsumerStatefulWidget {

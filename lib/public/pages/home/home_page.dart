@@ -1,8 +1,8 @@
 // iam/presentation/pages/home_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../controllers/providers.dart';
-import 'login_page.dart';
+import '../../../iam/presentation/controllers/providers.dart';
+import '../../../iam/presentation/pages/login_page.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
