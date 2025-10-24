@@ -6,6 +6,8 @@ import '../../../iam/presentation/pages/login_page.dart';
 import '../../../shared/components/appbar_widget.dart';
 import '../../../shared/components/bottom_navigation_widget.dart';
 import '../../../profiles/presentation/pages/profile_page.dart';
+import '../../../class/presentation/pages/class_page.dart';
+import '../../../community/presentation/pages/community_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -26,9 +28,9 @@ class _HomePageState extends ConsumerState<HomePage> {
       case 0:
         return _homeBody();
       case 1:
-        return _joinBody();
+        return const ClassPage();
       case 2:
-        return _communityBody();
+        return const CommunityPage();
       default:
         return _homeBody();
     }
@@ -96,14 +98,6 @@ class _HomePageState extends ConsumerState<HomePage> {
         ),
       ),
     );
-  }
-
-  Widget _joinBody() {
-    return const Center(child: Text('Join Page'));
-  }
-
-  Widget _communityBody() {
-    return const Center(child: Text('Community Page'));
   }
 
   @override
