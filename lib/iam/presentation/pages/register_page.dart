@@ -16,6 +16,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  bool _hasNavigated = false;
 
   @override
   void dispose() {
@@ -31,20 +32,18 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     final authNotifier = ref.read(authControllerProvider.notifier);
 
     // Navigate to home if authenticated
-    if (authState.isAuthenticated && authState.user != null && !authState.loading) {
+    if (authState.isAuthenticated && authState.user != null && !authState.loading && !_hasNavigated) {
+      _hasNavigated = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => const HomePage()),
+          (route) => false, // Remove all previous routes
         );
       });
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registro'),
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Center(
@@ -60,7 +59,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 ),
                 const SizedBox(height: 32),
                 const Text(
-                  'Crear cuenta',
+                  'Create account',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -69,7 +68,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'Regístrate para comenzar',
+                  'Sign up to get started',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey,
@@ -80,7 +79,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 TextField(
                   controller: emailController,
                   decoration: InputDecoration(
-                    labelText: 'Correo electrónico',
+                    labelText: 'Email',
                     prefixIcon: const Icon(Icons.email),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -95,7 +94,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 TextField(
                   controller: passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Contraseña',
+                    labelText: 'Password',
                     prefixIcon: const Icon(Icons.lock),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -110,7 +109,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 TextField(
                   controller: confirmPasswordController,
                   decoration: InputDecoration(
-                    labelText: 'Confirmar contraseña',
+                    labelText: 'Confirm password',
                     prefixIcon: const Icon(Icons.lock_outline),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -126,11 +125,11 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   onPressed: authState.loading
                       ? null
                       : () {
-                          // Validar campos vacíos
+                          // Validate empty fields
                           if (emailController.text.trim().isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Por favor ingresa tu correo electrónico'),
+                                content: Text('Please enter your email'),
                                 backgroundColor: Colors.red,
                               ),
                             );
@@ -140,7 +139,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                           if (passwordController.text.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Por favor ingresa tu contraseña'),
+                                content: Text('Please enter your password'),
                                 backgroundColor: Colors.red,
                               ),
                             );
@@ -150,7 +149,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                           if (confirmPasswordController.text.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Por favor confirma tu contraseña'),
+                                content: Text('Please confirm your password'),
                                 backgroundColor: Colors.red,
                               ),
                             );
@@ -160,7 +159,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                           if (passwordController.text != confirmPasswordController.text) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Las contraseñas no coinciden'),
+                                content: Text('Passwords do not match'),
                                 backgroundColor: Colors.red,
                               ),
                             );
@@ -190,7 +189,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                           ),
                         )
                       : const Text(
-                          'Registrarse',
+                          'Sign Up',
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                 ),
@@ -210,9 +209,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                         Expanded(
                           child: Text(
                             authState.error!.contains('already exists')
-                                ? 'Este correo electrónico ya está registrado. Intenta iniciar sesión.'
+                                ? 'This email is already registered. Try signing in.'
                                 : authState.error!.contains('Invalid data')
-                                ? 'Los datos proporcionados no son válidos. Verifica tu información.'
+                                ? 'The provided data is invalid. Check your information.'
                                 : authState.error!,
                             style: const TextStyle(color: Colors.red),
                           ),
@@ -225,7 +224,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('¿Ya tienes cuenta?'),
+                    const Text('Already have an account?'),
                     TextButton(
                       onPressed: authState.loading
                           ? null
@@ -236,7 +235,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                               );
                             },
                       child: const Text(
-                        'Inicia sesión',
+                        'Sign in',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.blue,

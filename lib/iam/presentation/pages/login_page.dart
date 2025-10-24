@@ -15,6 +15,7 @@ class LoginPage extends ConsumerStatefulWidget {
 class _LoginPageState extends ConsumerState<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  bool _hasNavigated = false;
 
   @override
   void dispose() {
@@ -29,20 +30,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final authNotifier = ref.read(authControllerProvider.notifier);
 
     // Navigate to home if authenticated
-    if (authState.isAuthenticated && authState.user != null && !authState.loading) {
+    if (authState.isAuthenticated && authState.user != null && !authState.loading && !_hasNavigated) {
+      _hasNavigated = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => const HomePage()),
+          (route) => false, // Remove all previous routes
         );
       });
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Iniciar Sesión'),
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Center(
@@ -58,7 +57,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 ),
                 const SizedBox(height: 32),
                 const Text(
-                  'Bienvenido de vuelta',
+                  'Welcome back',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -67,7 +66,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'Inicia sesión en tu cuenta',
+                  'Sign in to your account',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey,
@@ -78,7 +77,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 TextField(
                   controller: emailController,
                   decoration: InputDecoration(
-                    labelText: 'Correo electrónico',
+                    labelText: 'Email',
                     prefixIcon: const Icon(Icons.email),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -93,7 +92,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 TextField(
                   controller: passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Contraseña',
+                    labelText: 'Password',
                     prefixIcon: const Icon(Icons.lock),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -130,7 +129,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           ),
                         )
                       : const Text(
-                          'Iniciar Sesión',
+                          'Sign In',
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                 ),
@@ -150,9 +149,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         Expanded(
                           child: Text(
                             authState.error!.contains('Invalid email or password')
-                                ? 'Correo electrónico o contraseña incorrectos.'
+                                ? 'Incorrect email or password.'
                                 : authState.error!.contains('Invalid data')
-                                ? 'Los datos proporcionados no son válidos.'
+                                ? 'The provided data is invalid.'
                                 : authState.error!,
                             style: const TextStyle(color: Colors.red),
                           ),
@@ -165,7 +164,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('¿No tienes cuenta?'),
+                    const Text('Don\'t have an account?'),
                     TextButton(
                       onPressed: authState.loading
                           ? null
@@ -176,7 +175,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               );
                             },
                       child: const Text(
-                        'Regístrate',
+                        'Sign up',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.blue,

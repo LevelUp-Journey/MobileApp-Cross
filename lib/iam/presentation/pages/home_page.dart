@@ -13,23 +13,6 @@ class HomePage extends ConsumerWidget {
     final authNotifier = ref.read(authControllerProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Inicio'),
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              authNotifier.logout();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const LoginPage()),
-              );
-            },
-            tooltip: 'Cerrar sesión',
-          ),
-        ],
-      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Center(
@@ -43,7 +26,7 @@ class HomePage extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
               const Text(
-                '¡Bienvenido!',
+                'Welcome!',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -52,7 +35,7 @@ class HomePage extends ConsumerWidget {
               const SizedBox(height: 16),
               if (authState.user != null) ...[
                 Text(
-                  'Usuario: ${authState.user!.email.value}',
+                  'User: ${authState.user!.email.value}',
                   style: const TextStyle(
                     fontSize: 18,
                     color: Colors.grey,
@@ -70,12 +53,23 @@ class HomePage extends ConsumerWidget {
               ],
               const SizedBox(height: 32),
               const Text(
-                'Has iniciado sesión correctamente',
+                'You have successfully signed in',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey,
                 ),
                 textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: () {
+                  authNotifier.logout();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const LoginPage()),
+                  );
+                },
+                child: const Text('Sign out'),
               ),
             ],
           ),
