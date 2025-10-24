@@ -31,4 +31,32 @@ class RestProfileRepository implements ProfileRepository {
       throw Exception('Failed to load profile');
     }
   }
+
+  @override
+  Future<Profile> updateProfile(Profile profile, {required String token}) async {
+    final uri = Uri.parse(
+        '${Environment.profileserverBaseUrl}${Environment.updateProfileEndpoint}/${profile.id}');
+    if (kDebugMode) {
+      print('Updating profile at: $uri');
+      print('Profile data: ${jsonEncode(profile.toJson())}');
+    }
+    final response = await client.put(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(profile.toJson()),
+    );
+    if (kDebugMode) {
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+    }
+
+    if (response.statusCode == 200) {
+      return Profile.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed to update profile');
+    }
+  }
 }

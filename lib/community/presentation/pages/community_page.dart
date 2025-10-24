@@ -5,11 +5,8 @@ class CommunityPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // Community content here
-      child: const Center(
-        child: Text('Community Content'),
-      ),
+    return const Center(
+      child: Text('Community Content'),
     );
   }
 }

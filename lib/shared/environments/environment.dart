@@ -11,4 +11,9 @@ class Environment {
   static const String profileserverBaseUrl = 'http://localhost:8082';
   static const String getProfileByUserIdEndpoint = '/api/v1/profiles/user';
   static const String updateProfileEndpoint = '/api/v1/profiles';
+
+  // Cloudinary credentials
+  static const String cloudinaryCloudName = 'dkkfv72vo';
+  static const String cloudinaryApiKey = '933614744521526';
+  static const String cloudinaryApiSecret = '4cspLHNdJO5XUo61UsXGkT4I-vs';
 }

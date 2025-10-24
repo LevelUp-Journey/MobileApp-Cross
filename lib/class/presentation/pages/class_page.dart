@@ -5,11 +5,8 @@ class ClassPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // Class content here
-      child: const Center(
-        child: Text('Class Content'),
-      ),
+    return const Center(
+      child: Text('Class Content'),
     );
   }
 }

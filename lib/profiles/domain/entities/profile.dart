@@ -22,4 +22,14 @@ class Profile {
       lastName: json['lastName'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'username': username,
+      'profileUrl': profileUrl,
+      'firstName': firstName,
+      'lastName': lastName,
+    };
+  }
 }
