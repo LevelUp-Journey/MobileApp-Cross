@@ -1,0 +1,6 @@
+// lib/shared/config.dart
+import 'environments/environment.dart';
+
+class Config {
+  static String get baseUrl => Environment.serverBaseUrl;
+}
