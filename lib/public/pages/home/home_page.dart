@@ -1,18 +1,28 @@
-// iam/presentation/pages/home_page.dart
+// public/pages/home/home_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../iam/presentation/controllers/providers.dart';
 import '../../../iam/presentation/pages/login_page.dart';
+import '../../../shared/components/appbar_widget.dart';
+import '../../../shared/components/bottom_navigation_widget.dart';
 
-class HomePage extends ConsumerWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends ConsumerState<HomePage> {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
     final authNotifier = ref.read(authControllerProvider.notifier);
 
     return Scaffold(
+      appBar: const HeaderWidget(),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Center(
@@ -70,6 +80,13 @@ class HomePage extends ConsumerWidget {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavigationWidget(
+        currentIndex: _currentIndex,
+        onTap: (i) {
+          setState(() => _currentIndex = i);
+          // TODO: navigate to different sections for each index if desired
+        },
       ),
     );
   }
