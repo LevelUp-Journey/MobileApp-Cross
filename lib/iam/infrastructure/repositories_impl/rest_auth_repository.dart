@@ -56,7 +56,6 @@ class RestAuthRepository extends BaseService implements AuthRepository {
         'password': password.value,
       }),
     );
-
     if (resp.statusCode == 200) {
       final data = jsonDecode(resp.body) as Map<String, dynamic>;
       
@@ -68,10 +67,12 @@ class RestAuthRepository extends BaseService implements AuthRepository {
       
       // Usar el email de la respuesta si está disponible, sino usar el que se envió
       final emailValue = data['email'] ?? email.value;
+      final token = data['token'] as String?;
       
       return User(
         id: id as String,
         email: Email(emailValue as String),
+        token: token,
       );
     } else if (resp.statusCode == 401) {
       throw Exception('Invalid email or password');
