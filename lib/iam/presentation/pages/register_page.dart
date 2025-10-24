@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controllers/providers.dart';
 import '../../../shared/components/iam/logo_widget.dart';
 import '../../../shared/components/iam/auth_form.dart';
-import 'login_page.dart';
+// import 'login_page.dart'; // switched link hidden in auth form
 import 'home_page.dart';
 import 'welcome_page.dart';
 
@@ -70,10 +70,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 const SizedBox(height: 16),
                 const LogoWidget(size: 120),
                 const SizedBox(height: 24),
-                const Text('Create account', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                const SizedBox(height: 8),
-                const Text('Sign up to get started', style: TextStyle(fontSize: 16, color: Colors.grey), textAlign: TextAlign.center),
-                const SizedBox(height: 32),
                 AuthForm(
                   isRegister: true,
                   emailController: emailController,
@@ -81,6 +77,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   confirmController: confirmPasswordController,
                   loading: authState.loading,
                   errorText: authState.error,
+                  showSwitch: false,
                   onSubmit: () {
                     // Validate quickly before calling notifier
                     if (emailController.text.trim().isEmpty) {
@@ -101,11 +98,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     }
                     authNotifier.signUp(emailController.text.trim(), passwordController.text);
                   },
-                  onSwitch: () {
-                    if (!authState.loading) {
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginPage()));
-                    }
-                  },
+                  onSwitch: () {},
                 ),
               ],
             ),

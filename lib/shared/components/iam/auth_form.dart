@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../ui/primary_button.dart';
 
 typedef SubmitCallback = void Function();
 
@@ -11,6 +12,8 @@ class AuthForm extends StatelessWidget {
   final String? errorText;
   final SubmitCallback onSubmit;
   final VoidCallback onSwitch;
+  final bool showSwitch;
+  final Color? buttonColor;
 
   const AuthForm({
     super.key,
@@ -22,6 +25,8 @@ class AuthForm extends StatelessWidget {
     this.errorText,
     required this.onSubmit,
     required this.onSwitch,
+    this.showSwitch = true,
+    this.buttonColor,
   });
 
   @override
@@ -61,25 +66,15 @@ class AuthForm extends StatelessWidget {
           ),
         ],
         const SizedBox(height: 24),
-        ElevatedButton(
-          onPressed: loading ? null : onSubmit,
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            backgroundColor: isRegister ? Colors.green : Theme.of(context).colorScheme.primary,
-            foregroundColor: Colors.white,
-          ),
-          child: loading
-              ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
-                )
-              : Text(
-                  isRegister ? 'Sign Up' : 'Sign In',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-        ),
+            SizedBox(
+              width: double.infinity,
+              child: PrimaryButton(
+                onPressed: loading ? null : () => onSubmit(),
+                child: loading
+                    ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                    : Text(isRegister ? 'Sign Up' : 'Sign In', style: const TextStyle(color: Colors.white, fontSize: 16)),
+              ),
+            ),
         if (errorText != null) ...[
           const SizedBox(height: 16),
           Container(
@@ -98,14 +93,15 @@ class AuthForm extends StatelessWidget {
             ),
           ),
         ],
-        const SizedBox(height: 24),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(isRegister ? 'Already have an account?' : "Don't have an account?"),
-            TextButton(onPressed: onSwitch, child: Text(isRegister ? 'Sign in' : 'Sign up', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue))),
-          ],
-        ),
+        if (showSwitch) const SizedBox(height: 24),
+        if (showSwitch)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(isRegister ? 'Already have an account?' : "Don't have an account?"),
+              TextButton(onPressed: onSwitch, child: Text(isRegister ? 'Sign in' : 'Sign up', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue))),
+            ],
+          ),
       ],
     );
   }

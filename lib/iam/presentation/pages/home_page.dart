@@ -22,7 +22,6 @@ class HomePage extends ConsumerWidget {
               const Icon(
                 Icons.check_circle,
                 size: 80,
-                color: Colors.green,
               ),
               const SizedBox(height: 24),
               const Text(
@@ -38,7 +37,6 @@ class HomePage extends ConsumerWidget {
                   'User: ${authState.user!.email.value}',
                   style: const TextStyle(
                     fontSize: 18,
-                    color: Colors.grey,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -47,7 +45,6 @@ class HomePage extends ConsumerWidget {
                   'ID: ${authState.user!.id}',
                   style: const TextStyle(
                     fontSize: 14,
-                    color: Colors.grey,
                   ),
                 ),
               ],
@@ -56,7 +53,6 @@ class HomePage extends ConsumerWidget {
                 'You have successfully signed in',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey,
                 ),
                 textAlign: TextAlign.center,
               ),

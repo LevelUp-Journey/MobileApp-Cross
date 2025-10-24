@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controllers/providers.dart';
 import '../../../shared/components/iam/logo_widget.dart';
 import '../../../shared/components/iam/auth_form.dart';
-import 'register_page.dart';
 import 'home_page.dart';
 import 'welcome_page.dart';
 
@@ -68,22 +67,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 const SizedBox(height: 16),
                 const LogoWidget(size: 120),
                 const SizedBox(height: 24),
-                const Text('Welcome back', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                const SizedBox(height: 8),
-                const Text('Sign in to your account', style: TextStyle(fontSize: 16, color: Colors.grey), textAlign: TextAlign.center),
-                const SizedBox(height: 32),
                 AuthForm(
                   isRegister: false,
                   emailController: emailController,
                   passwordController: passwordController,
                   loading: authState.loading,
                   errorText: authState.error,
+                  showSwitch: false,
                   onSubmit: () => authNotifier.signIn(emailController.text.trim(), passwordController.text),
-                  onSwitch: () {
-                    if (!authState.loading) {
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const RegisterPage()));
-                    }
-                  },
+                  onSwitch: () {},
                 ),
               ],
             ),

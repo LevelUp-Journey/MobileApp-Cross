@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../shared/components/iam/logo_widget.dart';
+import '../../../shared/components/ui/primary_button.dart';
 import 'login_page.dart';
 import 'register_page.dart';
 
@@ -46,19 +47,11 @@ class WelcomePage extends StatelessWidget {
                             const SizedBox(height: 48),
 
                             // Main CTA
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const RegisterPage()));
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.black,
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                ),
-                                child: const Text('Create Account', style: TextStyle(color: Colors.white, fontSize: 16)),
-                              ),
+                            PrimaryButton(
+                              onPressed: () {
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const RegisterPage()));
+                              },
+                              child: const Text('Create Account', style: TextStyle(fontSize: 16)),
                             ),
 
                             const SizedBox(height: 28),
