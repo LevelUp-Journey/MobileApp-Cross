@@ -103,9 +103,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     });
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-      ),
+      appBar: AppBar(),
       body: Center(
         child: profileState.loading && profileState.profile == null
             ? const CircularProgressIndicator()
