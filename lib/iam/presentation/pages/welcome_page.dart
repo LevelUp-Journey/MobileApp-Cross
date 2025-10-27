@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../shared/components/iam/logo_widget.dart';
+import '../components/logo_widget.dart';
 import '../../../shared/components/ui/primary_button.dart';
 import 'login_page.dart';
 import 'register_page.dart';

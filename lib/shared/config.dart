@@ -2,5 +2,5 @@
 import 'environments/environment.dart';
 
 class Config {
-  static String get baseUrl => Environment.serverBaseUrl;
+  static String get baseUrl => Environment.iamserverBaseUrl;
 }

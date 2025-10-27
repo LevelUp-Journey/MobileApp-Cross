@@ -4,7 +4,8 @@ import '../value_objects/email.dart';
 class User {
   final String id;
   final Email email;
-  const User({required this.id, required this.email});
+  final String? token;
+  const User({required this.id, required this.email, this.token});
 
   @override
   bool operator ==(Object other) =>
