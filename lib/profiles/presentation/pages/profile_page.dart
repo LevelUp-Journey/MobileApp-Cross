@@ -8,6 +8,8 @@ import '../controllers/providers.dart';
 import '../components/profile_image_widget.dart';
 import '../components/profile_form_widget.dart';
 import '../components/save_profile_button.dart';
+import '../components/roles_widget.dart';
+import '../../../iam/presentation/controllers/providers.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -78,6 +80,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileControllerProvider);
+    final authState = ref.watch(authControllerProvider);
 
     ref.listen<ProfileState>(profileControllerProvider, (previous, next) {
       if (next.profile != null && (previous?.profile != next.profile)) {
@@ -103,6 +106,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                               profileUrlController: _profileUrlController,
                               picker: _picker,
                             ),
+                            const SizedBox(height: 20),
+                            RolesWidget(roles: authState.roles),
                             const SizedBox(height: 20),
                             ProfileFormWidget(
                               formKey: _formKey,

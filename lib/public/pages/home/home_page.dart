@@ -74,6 +74,16 @@ class _HomePageState extends ConsumerState<HomePage> {
                   fontSize: 14,
                 ),
               ),
+              const SizedBox(height: 8),
+              if (authState.roles.isNotEmpty) ...[
+                Text(
+                  'Roles: ${authState.roles.join(", ")}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ],
             const SizedBox(height: 32),
             const Text(

@@ -6,8 +6,11 @@ import '../../domain/repositories/auth_repository.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/value_objects/email.dart';
 import '../../domain/value_objects/password.dart';
+import '../../domain/services/jwt_decoder_service.dart';
 
 class RestAuthRepository extends BaseService implements AuthRepository {
+  final JwtDecoderService _jwtDecoder = JwtDecoderService();
+
   RestAuthRepository(super.client, {required super.baseUrl});
 
   @override
@@ -58,21 +61,28 @@ class RestAuthRepository extends BaseService implements AuthRepository {
     );
     if (resp.statusCode == 200) {
       final data = jsonDecode(resp.body) as Map<String, dynamic>;
-      
+
       // Validar que al menos el campo id esté presente
       final id = data['id'];
       if (id == null) {
         throw Exception('Invalid response from server: missing id');
       }
-      
+
       // Usar el email de la respuesta si está disponible, sino usar el que se envió
       final emailValue = data['email'] ?? email.value;
       final token = data['token'] as String?;
-      
+
+      // Extraer roles del JWT token
+      List<String> roles = [];
+      if (token != null && token.isNotEmpty) {
+        roles = _jwtDecoder.extractRoles(token);
+      }
+
       return User(
         id: id as String,
         email: Email(emailValue as String),
         token: token,
+        roles: roles,
       );
     } else if (resp.statusCode == 401) {
       throw Exception('Invalid email or password');
