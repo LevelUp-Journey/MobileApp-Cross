@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:levelup_journey/shared/services/cloudinary_service.dart';
 
 class ProfileImageWidget extends StatefulWidget {
   final TextEditingController profileUrlController;
   final ImagePicker picker;
-  final CloudinaryService cloudinaryService;
 
   const ProfileImageWidget({
     super.key,
     required this.profileUrlController,
     required this.picker,
-    required this.cloudinaryService,
   });
 
   @override
@@ -22,18 +19,7 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
   Future<void> _pickAndUploadImage() async {
     final XFile? image = await widget.picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      try {
-        final imageUrl = await widget.cloudinaryService.uploadImage(image.path);
-        if (!mounted) return;
-        setState(() {
-          widget.profileUrlController.text = imageUrl;
-        });
-      } catch (e) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to upload image: $e')),
-        );
-      }
+      // Image picked, but upload functionality removed
     }
   }
 

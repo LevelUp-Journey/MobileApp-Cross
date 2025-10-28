@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:levelup_journey/shared/services/cloudinary_service.dart';
 
 import '../../domain/entities/profile.dart';
 import '../controllers/profile_state.dart';
@@ -25,7 +24,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   late TextEditingController _profileUrlController;
 
   final ImagePicker _picker = ImagePicker();
-  final CloudinaryService _cloudinaryService = CloudinaryService();
 
   @override
   void initState() {
@@ -104,7 +102,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                             ProfileImageWidget(
                               profileUrlController: _profileUrlController,
                               picker: _picker,
-                              cloudinaryService: _cloudinaryService,
                             ),
                             const SizedBox(height: 20),
                             ProfileFormWidget(
