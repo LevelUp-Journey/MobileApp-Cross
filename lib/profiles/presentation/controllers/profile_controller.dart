@@ -16,7 +16,7 @@ class ProfileController extends Notifier<ProfileState> {
       final getProfile = ref.read(getProfileUseCaseProvider);
       final authState = ref.read(authControllerProvider);
       final userId = authState.user?.id;
-      final token = authState.user?.token;
+      final token = authState.token ?? authState.user?.token;
 
       if (userId == null || token == null) {
         throw Exception('User not authenticated or token not found');
@@ -34,7 +34,7 @@ class ProfileController extends Notifier<ProfileState> {
     try {
       final updateProfileUseCase = ref.read(updateProfileUseCaseProvider);
       final authState = ref.read(authControllerProvider);
-      final token = authState.user?.token;
+      final token = authState.token ?? authState.user?.token;
 
       if (token == null) {
         throw Exception('User not authenticated or token not found');
