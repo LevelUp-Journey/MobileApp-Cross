@@ -44,19 +44,26 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
         children: [
           CircleAvatar(
             radius: 50,
+            backgroundColor: Colors.black12,
             backgroundImage: widget.profileUrlController.text.isNotEmpty
                 ? NetworkImage(widget.profileUrlController.text)
                 : null,
             child: widget.profileUrlController.text.isEmpty
-                ? const Icon(Icons.person, size: 50)
+                ? const Icon(Icons.person, size: 50, color: Colors.black)
                 : null,
           ),
           Positioned(
             bottom: 0,
             right: 0,
-            child: IconButton(
-              icon: const Icon(Icons.camera_alt),
-              onPressed: _pickAndUploadImage,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.black,
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.camera_alt, color: Colors.white),
+                onPressed: _pickAndUploadImage,
+              ),
             ),
           ),
         ],

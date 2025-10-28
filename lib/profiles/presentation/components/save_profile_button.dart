@@ -14,11 +14,13 @@ class SaveProfileButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: isLoading ? null : onPressed,
-      icon: const Icon(Icons.save_alt_outlined),
+      icon: const Icon(Icons.save_alt_outlined, color: Colors.white),
       label: isLoading
           ? const CircularProgressIndicator(color: Colors.white)
-          : const Text('Save Changes'),
+          : const Text('Save Changes', style: TextStyle(color: Colors.white)),
       style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 15),
         textStyle: Theme.of(context).textTheme.labelLarge,
       ),

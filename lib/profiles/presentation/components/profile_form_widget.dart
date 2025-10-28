@@ -25,8 +25,15 @@ class ProfileFormWidget extends StatelessWidget {
             controller: usernameController,
             decoration: const InputDecoration(
               labelText: 'Username',
-              prefixIcon: Icon(Icons.person_outline),
+              labelStyle: TextStyle(color: Colors.black),
+              prefixIcon: Icon(Icons.person_outline, color: Colors.black),
               border: OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black, width: 2.0),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black54),
+              ),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -40,8 +47,15 @@ class ProfileFormWidget extends StatelessWidget {
             controller: firstNameController,
             decoration: const InputDecoration(
               labelText: 'First Name',
-              prefixIcon: Icon(Icons.badge_outlined),
+              labelStyle: TextStyle(color: Colors.black),
+              prefixIcon: Icon(Icons.badge_outlined, color: Colors.black),
               border: OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black, width: 2.0),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black54),
+              ),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -55,8 +69,15 @@ class ProfileFormWidget extends StatelessWidget {
             controller: lastNameController,
             decoration: const InputDecoration(
               labelText: 'Last Name',
-              prefixIcon: Icon(Icons.badge_outlined),
+              labelStyle: TextStyle(color: Colors.black),
+              prefixIcon: Icon(Icons.badge_outlined, color: Colors.black),
               border: OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black, width: 2.0),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black54),
+              ),
             ),
           ),
         ],
