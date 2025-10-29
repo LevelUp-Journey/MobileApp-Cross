@@ -19,10 +19,14 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   int _currentIndex = 0;
   bool _isProfileMode = false;
+  bool _isSettingsMode = false;
 
   Widget _buildBody() {
     if (_isProfileMode) {
       return const ProfilePage(); // Use the profile page content
+    }
+    if (_isSettingsMode) {
+      return _settingsBody();
     }
     switch (_currentIndex) {
       case 0:
@@ -110,17 +114,41 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
+  Widget _settingsBody() {
+    return const Padding(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Application Settings',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 20),
+          // Here you can add configuration options
+          Text('Coming soon: Theme, Language, Notifications, etc.'),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: HeaderWidget(
-        leading: _isProfileMode
+        leading: _isProfileMode || _isSettingsMode
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => setState(() => _isProfileMode = false),
+                onPressed: () => setState(() {
+                  _isProfileMode = false;
+                  _isSettingsMode = false;
+                }),
               )
             : null,
-        onLeadingTap: _isProfileMode ? null : () => setState(() => _isProfileMode = true),
+        onLeadingTap: (_isProfileMode || _isSettingsMode) ? null : () => setState(() => _isSettingsMode = true),
       ),
       body: _buildBody(),
       bottomNavigationBar: BottomNavigationWidget(
@@ -129,6 +157,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           setState(() {
             _currentIndex = i;
             _isProfileMode = false; // Reset profile mode when navigating
+            _isSettingsMode = false; // Reset settings mode when navigating
           });
         },
       ),

@@ -94,10 +94,10 @@ class _DefaultLeading extends StatelessWidget {
     return IconButton(
       onPressed: onTap,
       icon: const Icon(
-        Icons.person,
+        Icons.settings,
         color: Colors.black,
       ),
-      tooltip: 'Profile',
+      tooltip: 'Settings',
     );
   }
 }

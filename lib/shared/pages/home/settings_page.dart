@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../components/appbar_widget.dart';
+import '../../components/bottom_navigation_widget.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -28,6 +29,15 @@ class SettingsPage extends StatelessWidget {
             Text('Coming soon: Theme, Language, Notifications, etc.'),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationWidget(
+        currentIndex: -1, // No active item
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.of(context).pop(); // Go back to home
+          }
+          // Other indices do nothing
+        },
       ),
     );
   }
