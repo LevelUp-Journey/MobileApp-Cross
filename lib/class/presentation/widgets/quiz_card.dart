@@ -1,6 +1,8 @@
 // class/presentation/widgets/quiz_card.dart
 import 'package:flutter/material.dart';
 import '../../domain/entities/quiz.dart';
+import 'quiz_status_badge.dart';
+import 'quiz_info_chip.dart';
 
 class QuizCard extends StatelessWidget {
   final Quiz quiz;
@@ -43,7 +45,7 @@ class QuizCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  _buildStatusBadge(),
+                  QuizStatusBadge(isPublic: quiz.isPublic),
                   if (onEdit != null || onDelete != null || onView != null)
                     PopupMenuButton<String>(
                       onSelected: (value) {
@@ -117,15 +119,15 @@ class QuizCard extends StatelessWidget {
                 spacing: 16,
                 runSpacing: 8,
                 children: [
-                  _buildInfoChip(
+                  QuizInfoChip(
                     icon: Icons.category,
                     label: quiz.category,
                   ),
-                  _buildInfoChip(
+                  QuizInfoChip(
                     icon: Icons.question_answer,
                     label: '${quiz.totalQuestions} questions',
                   ),
-                  _buildInfoChip(
+                  QuizInfoChip(
                     icon: Icons.stars,
                     label: '${quiz.totalPoints} points',
                   ),
@@ -135,52 +137,6 @@ class QuizCard extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildStatusBadge() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: quiz.isPublic ? Colors.green.shade100 : Colors.orange.shade100,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            quiz.isPublic ? Icons.public : Icons.quiz,
-            size: 14,
-            color: quiz.isPublic ? Colors.green.shade700 : Colors.orange.shade700,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            quiz.isPublic ? 'Public' : 'Private',
-            style: TextStyle(
-              fontSize: 12,
-              color: quiz.isPublic ? Colors.green.shade700 : Colors.orange.shade700,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoChip({required IconData icon, required String label}) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 16, color: Colors.grey.shade600),
-        const SizedBox(width: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 13,
-            color: Colors.grey.shade600,
-          ),
-        ),
-      ],
     );
   }
 }

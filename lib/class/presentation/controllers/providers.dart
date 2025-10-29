@@ -14,7 +14,9 @@ import '../../application/use_cases/delete_question_use_case.dart';
 import '../../application/use_cases/get_question_use_case.dart';
 import '../../application/use_cases/publish_quiz_use_case.dart';
 import '../../infrastructure/repositories_impl/rest_quiz_repository.dart';
+import '../../infrastructure/repositories_impl/rest_question_repository.dart';
 import '../../domain/repositories/quiz_repository.dart';
+import '../../domain/repositories/question_repository.dart';
 import 'create_quiz_controller.dart';
 import 'my_quizzes_controller.dart';
 import 'update_quiz_controller.dart';
@@ -34,6 +36,13 @@ final quizRepositoryProvider = Provider<QuizRepository>((ref) {
   final client = ref.watch(httpClientProvider);
   final baseUrl = ref.watch(quizBaseUrlProvider);
   return RestQuizRepository(client, baseUrl: baseUrl);
+});
+
+// Question Repository Provider
+final questionRepositoryProvider = Provider<QuestionRepository>((ref) {
+  final client = ref.watch(httpClientProvider);
+  final baseUrl = ref.watch(quizBaseUrlProvider);
+  return RestQuestionRepository(client, baseUrl: baseUrl);
 });
 
 // Use Cases Providers
@@ -63,22 +72,22 @@ final updateQuizUseCaseProvider = Provider<UpdateQuizUseCase>((ref) {
 });
 
 final addQuestionUseCaseProvider = Provider<AddQuestionUseCase>((ref) {
-  final repo = ref.watch(quizRepositoryProvider);
+  final repo = ref.watch(questionRepositoryProvider);
   return AddQuestionUseCase(repo);
 });
 
 final updateQuestionUseCaseProvider = Provider<UpdateQuestionUseCase>((ref) {
-  final repo = ref.watch(quizRepositoryProvider);
+  final repo = ref.watch(questionRepositoryProvider);
   return UpdateQuestionUseCase(repo);
 });
 
 final deleteQuestionUseCaseProvider = Provider<DeleteQuestionUseCase>((ref) {
-  final repo = ref.watch(quizRepositoryProvider);
+  final repo = ref.watch(questionRepositoryProvider);
   return DeleteQuestionUseCase(repo);
 });
 
 final getQuestionUseCaseProvider = Provider<GetQuestionUseCase>((ref) {
-  final repo = ref.watch(quizRepositoryProvider);
+  final repo = ref.watch(questionRepositoryProvider);
   return GetQuestionUseCase(repo);
 });
 

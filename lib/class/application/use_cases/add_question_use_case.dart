@@ -1,8 +1,8 @@
 // class/application/use_cases/add_question_use_case.dart
-import '../../domain/repositories/quiz_repository.dart';
+import '../../domain/repositories/question_repository.dart';
 
 class AddQuestionUseCase {
-  final QuizRepository repository;
+  final QuestionRepository repository;
 
   AddQuestionUseCase(this.repository);
 

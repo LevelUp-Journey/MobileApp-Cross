@@ -1,10 +1,10 @@
 // class/infrastructure/repositories_impl/rest_quiz_repository.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../domain/repositories/quiz_repository.dart';
 import '../../domain/entities/quiz.dart';
 import '../../domain/entities/question.dart';
 import '../../domain/entities/answer.dart';
+import '../../domain/repositories/quiz_repository.dart';
 
 class RestQuizRepository implements QuizRepository {
   final http.Client client;
@@ -151,144 +151,6 @@ class RestQuizRepository implements QuizRepository {
   }
 
   @override
-  Future<void> addQuestion({
-    required int quizId,
-    required String questionText,
-    required String questionType,
-    required int timeLimit,
-    required int points,
-    required List<String> answers,
-    required int correctAnswerIndex,
-    String? mediaUrl,
-    required String userId,
-    required String token,
-    required String userRole,
-  }) async {
-    final response = await client.post(
-      Uri.parse('$baseUrl/api/v1/quizzes/$quizId/questions'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-        'X-User-Id': userId,
-        'X-User-Role': userRole,
-      },
-      body: jsonEncode({
-        'questionText': questionText,
-        'questionType': questionType,
-        'timeLimit': timeLimit,
-        'points': points,
-        'answers': answers,
-        'correctAnswerIndex': correctAnswerIndex,
-        'mediaUrl': mediaUrl,
-        'userId': userId,
-      }),
-    );
-
-    if (response.statusCode != 201) {
-      throw Exception('Failed to add question: ${response.statusCode}');
-    }
-
-    // Question added successfully, no need to return id since it's not used
-  }
-
-  @override
-  Future<void> updateQuestion({
-    required int quizId,
-    required int questionId,
-    required String questionText,
-    required String questionType,
-    required int timeLimit,
-    required int points,
-    required List<String> answers,
-    required int correctAnswerIndex,
-    String? mediaUrl,
-    required String userId,
-    required String token,
-    required String userRole,
-  }) async {
-    final response = await client.put(
-      Uri.parse('$baseUrl/api/v1/quizzes/$quizId/questions/$questionId'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-        'X-User-Id': userId,
-        'X-User-Role': userRole,
-      },
-      body: jsonEncode({
-        'questionText': questionText,
-        'questionType': questionType,
-        'timeLimit': timeLimit,
-        'points': points,
-        'answers': answers,
-        'correctAnswerIndex': correctAnswerIndex,
-        'mediaUrl': mediaUrl,
-        'userId': userId,
-      }),
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to update question: ${response.statusCode}');
-    }
-  }
-
-  @override
-  Future<void> deleteQuestion({
-    required int quizId,
-    required int questionId,
-    required String userId,
-    required String token,
-    required String userRole,
-  }) async {
-    final uri = Uri.parse(
-      '$baseUrl/api/v1/quizzes/$quizId/questions/$questionId',
-    ).replace(queryParameters: {'userId': userId});
-
-    final response = await client.delete(
-      uri,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-        'X-User-Id': userId,
-        'X-User-Role': userRole,
-      },
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to delete question: ${response.statusCode}');
-    }
-  }
-
-  @override
-  Future<Question> getQuestionById({
-    required int quizId,
-    required int questionId,
-    required String userId,
-    required String token,
-    required String userRole,
-  }) async {
-    final uri = Uri.parse(
-      '$baseUrl/api/v1/quizzes/$quizId/questions/$questionId',
-    ).replace(queryParameters: {'userId': userId});
-
-    final response = await client.get(
-      uri,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-        'X-User-Id': userId,
-        'X-User-Role': userRole,
-      },
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to get question: ${response.statusCode}');
-    }
-
-    final data = jsonDecode(response.body) as Map<String, dynamic>;
-    return _parseQuestion(data);
-  }
-
-  @override
   Future<void> publishQuiz({
     required int quizId,
     required String userId,
@@ -388,6 +250,13 @@ class RestQuizRepository implements QuizRepository {
 
   // Helper methods to parse JSON to domain entities
   Quiz _parseQuiz(Map<String, dynamic> json) {
+    // Parse questions if they exist in the response
+    List<Question> questions = [];
+    if (json['questions'] != null) {
+      final questionsJson = json['questions'] as List<dynamic>;
+      questions = questionsJson.map((q) => _parseQuestion(q as Map<String, dynamic>)).toList();
+    }
+
     return Quiz(
       id: json['id'] as int,
       name: json['name'] as String,
@@ -396,40 +265,42 @@ class RestQuizRepository implements QuizRepository {
       category: json['category'] as String,
       visibility: json['visibility'] as String,
       creatorId: (json['creatorId'] as Map<String, dynamic>)['value'] as String,
-      questions: (json['questions'] as List<dynamic>?)
-              ?.map((q) => _parseQuestion(q as Map<String, dynamic>))
-              .toList() ??
-          [],
+      questions: questions,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
   }
 
   Question _parseQuestion(Map<String, dynamic> json) {
+    // Parse answers
+    List<Answer> answers = [];
+    if (json['answers'] != null) {
+      final answersJson = json['answers'] as List<dynamic>;
+      answers = answersJson.map((a) => _parseAnswer(a as Map<String, dynamic>)).toList();
+    }
+
     return Question(
       id: json['id'] as int,
-      content: json['content'] as String,
-      contentType: json['contentType'] as String,
+      content: json['questionText'] as String,
+      contentType: json['mediaUrl'] != null && (json['mediaUrl'] as String).isNotEmpty ? 'IMAGE' : 'TEXT',
       questionType: json['questionType'] as String,
       points: json['points'] as int,
-      timeLimitSeconds: json['timeLimitSeconds'] as int,
-      questionOrder: json['questionOrder'] as int,
-      answers: (json['answers'] as List<dynamic>)
-          .map((a) => _parseAnswer(a as Map<String, dynamic>))
-          .toList(),
+      timeLimitSeconds: json['timeLimit'] as int,
+      questionOrder: json['order'] ?? 0,
+      answers: answers,
       createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] ?? json['createdAt'] as String),
     );
   }
 
   Answer _parseAnswer(Map<String, dynamic> json) {
     return Answer(
       id: json['id'] as int,
-      content: json['content'] as String,
-      contentType: json['contentType'] as String,
+      content: json['answerText'] as String,
+      contentType: 'TEXT',
       isCorrect: json['isCorrect'] as bool,
       createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] ?? json['createdAt'] as String),
     );
   }
 }

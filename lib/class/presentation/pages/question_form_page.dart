@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../iam/presentation/controllers/providers.dart';
 import '../controllers/providers.dart';
+import '../widgets/question_form_fields.dart';
+import '../widgets/answer_options_manager.dart';
 
 class QuestionFormPage extends ConsumerStatefulWidget {
   final int quizId;
@@ -69,7 +71,6 @@ class _QuestionFormPageState extends ConsumerState<QuestionFormPage> {
       _questionType = question.questionType;
       _timeLimitController.text = question.timeLimitSeconds.toString();
       _pointsController.text = question.points.toString();
-      // _mediaUrlController.text = question.mediaUrl ?? ''; // Not available in Question entity
 
       // Handle answers
       for (var controller in _answerControllers) {
@@ -136,6 +137,24 @@ class _QuestionFormPageState extends ConsumerState<QuestionFormPage> {
         _answerControllers.removeAt(index);
         if (_correctAnswerIndex >= _answerControllers.length) {
           _correctAnswerIndex = _answerControllers.length - 1;
+        }
+      });
+    }
+  }
+
+  void _handleQuestionTypeChanged(String? value) {
+    if (value != null) {
+      setState(() {
+        _questionType = value;
+        if (_questionType == 'TRUE_FALSE' && _answerControllers.length != 2) {
+          // Reset to 2 answers for True/False
+          for (var c in _answerControllers) {
+            c.dispose();
+          }
+          _answerControllers.clear();
+          _answerControllers.add(TextEditingController(text: 'True'));
+          _answerControllers.add(TextEditingController(text: 'False'));
+          _correctAnswerIndex = 0;
         }
       });
     }
@@ -254,238 +273,48 @@ class _QuestionFormPageState extends ConsumerState<QuestionFormPage> {
       body: Stack(
         children: [
           Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            // Question Text
-            TextFormField(
-              controller: _questionTextController,
-              decoration: const InputDecoration(
-                labelText: 'Question Text',
-                hintText: 'What is the capital of France?',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.question_answer),
-              ),
-              maxLines: 3,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Question text is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-
-            // Question Type
-            DropdownButtonFormField<String>(
-              value: _questionType,
-              decoration: const InputDecoration(
-                labelText: 'Question Type',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.category),
-              ),
-              items: const [
-                DropdownMenuItem(
-                  value: 'MULTIPLE_CHOICE',
-                  child: Text('Multiple Choice'),
-                ),
-                DropdownMenuItem(
-                  value: 'TRUE_FALSE',
-                  child: Text('True/False'),
-                ),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  _questionType = value!;
-                  if (_questionType == 'TRUE_FALSE' && _answerControllers.length != 2) {
-                    // Reset to 2 answers for True/False
-                    for (var c in _answerControllers) {
-                      c.dispose();
-                    }
-                    _answerControllers.clear();
-                    _answerControllers.add(TextEditingController(text: 'True'));
-                    _answerControllers.add(TextEditingController(text: 'False'));
-                    _correctAnswerIndex = 0;
-                  }
-                });
-              },
-            ),
-            const SizedBox(height: 16),
-
-            // Time Limit and Points Row
-            Row(
+            key: _formKey,
+            child: ListView(
+              padding: const EdgeInsets.all(16),
               children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _timeLimitController,
-                    decoration: const InputDecoration(
-                      labelText: 'Time Limit (seconds)',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.timer),
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Required';
-                      }
-                      final num = int.tryParse(value);
-                      if (num == null || num < 5) {
-                        return 'Min 5 seconds';
-                      }
-                      return null;
-                    },
-                  ),
+                QuestionFormFields(
+                  questionTextController: _questionTextController,
+                  timeLimitController: _timeLimitController,
+                  pointsController: _pointsController,
+                  mediaUrlController: _mediaUrlController,
+                  questionType: _questionType,
+                  onQuestionTypeChanged: _handleQuestionTypeChanged,
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: TextFormField(
-                    controller: _pointsController,
-                    decoration: const InputDecoration(
-                      labelText: 'Points',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.stars),
+                const SizedBox(height: 24),
+                AnswerOptionsManager(
+                  answerControllers: _answerControllers,
+                  correctAnswerIndex: _correctAnswerIndex,
+                  onCorrectAnswerChanged: (index) {
+                    setState(() {
+                      _correctAnswerIndex = index;
+                    });
+                  },
+                  onAddOption: _addAnswerOption,
+                  onRemoveOption: _removeAnswerOption,
+                ),
+                const SizedBox(height: 24),
+                // Submit Button
+                ElevatedButton(
+                  onPressed: questionFormState.loading ? null : _handleSubmit,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Required';
-                      }
-                      final num = int.tryParse(value);
-                      if (num == null || num < 1) {
-                        return 'Min 1 point';
-                      }
-                      return null;
-                    },
+                  ),
+                  child: Text(
+                    isEditing ? 'Update Question' : 'Add Question',
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-
-            // Media URL (Optional)
-            TextFormField(
-              controller: _mediaUrlController,
-              decoration: const InputDecoration(
-                labelText: 'Media URL (Optional)',
-                hintText: 'https://example.com/image.jpg',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.image),
-              ),
-              keyboardType: TextInputType.url,
-            ),
-            const SizedBox(height: 24),
-
-            // Answers Section
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Answer Options',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                if (_questionType != 'TRUE_FALSE')
-                  TextButton.icon(
-                    onPressed: _addAnswerOption,
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add Option'),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 8),
-
-            // Answer Options List
-            ..._answerControllers.asMap().entries.map((entry) {
-              final index = entry.key;
-              final controller = entry.value;
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Row(
-                  children: [
-                    Radio<int>(
-                      value: index,
-                      groupValue: _correctAnswerIndex,
-                      onChanged: (value) {
-                        setState(() {
-                          _correctAnswerIndex = value!;
-                        });
-                      },
-                    ),
-                    Expanded(
-                      child: TextFormField(
-                        controller: controller,
-                        decoration: InputDecoration(
-                          labelText: 'Answer ${index + 1}',
-                          hintText: 'Enter answer option',
-                          border: const OutlineInputBorder(),
-                          suffixIcon: _questionType != 'TRUE_FALSE' &&
-                                  _answerControllers.length > 2
-                              ? IconButton(
-                                  icon: const Icon(Icons.close, size: 20),
-                                  onPressed: () => _removeAnswerOption(index),
-                                )
-                              : null,
-                        ),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Answer cannot be empty';
-                          }
-                          return null;
-                        },
-                        readOnly: _questionType == 'TRUE_FALSE',
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }),
-            const SizedBox(height: 8),
-
-            // Correct Answer Info
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.green.shade50,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.green.shade200),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.check_circle, color: Colors.green.shade700),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Select the correct answer by clicking the radio button',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.green.shade900,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Submit Button
-            ElevatedButton(
-              onPressed: questionFormState.loading ? null : _handleSubmit,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                isEditing ? 'Update Question' : 'Add Question',
-                style: const TextStyle(fontSize: 16),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
           // Loading Overlay
           if (questionFormState.loading)
             Container(

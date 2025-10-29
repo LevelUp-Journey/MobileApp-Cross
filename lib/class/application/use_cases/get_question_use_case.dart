@@ -1,9 +1,9 @@
 // class/application/use_cases/get_question_use_case.dart
-import '../../domain/repositories/quiz_repository.dart';
+import '../../domain/repositories/question_repository.dart';
 import '../../domain/entities/question.dart';
 
 class GetQuestionUseCase {
-  final QuizRepository repository;
+  final QuestionRepository repository;
 
   GetQuestionUseCase(this.repository);
 
