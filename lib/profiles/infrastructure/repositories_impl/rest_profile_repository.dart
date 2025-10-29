@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../../../shared/config.dart';
 import '../../../shared/environments/environment.dart';
@@ -15,16 +14,9 @@ class RestProfileRepository implements ProfileRepository {
   Future<Profile> getProfileByUserId(String userId, {required String token}) async {
     final uri = Uri.parse(
         '${Config.profileBaseUrl}${Environment.getProfileByUserIdEndpoint}/$userId');
-    if (kDebugMode) {
-      print('Requesting profile from: $uri');
-    }
     final response = await client.get(uri, headers: {
       'Authorization': 'Bearer $token',
     });
-    if (kDebugMode) {
-      print('Response status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-    }
 
     if (response.statusCode == 200) {
       return Profile.fromJson(json.decode(response.body));
@@ -37,10 +29,6 @@ class RestProfileRepository implements ProfileRepository {
   Future<Profile> updateProfile(Profile profile, {required String token}) async {
     final uri = Uri.parse(
         '${Config.profileBaseUrl}${Environment.updateProfileEndpoint}/${profile.id}');
-    if (kDebugMode) {
-      print('Updating profile at: $uri');
-      print('Profile data: ${jsonEncode(profile.toJson())}');
-    }
     final response = await client.put(
       uri,
       headers: {
@@ -49,10 +37,6 @@ class RestProfileRepository implements ProfileRepository {
       },
       body: jsonEncode(profile.toJson()),
     );
-    if (kDebugMode) {
-      print('Response status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-    }
 
     if (response.statusCode == 200) {
       return Profile.fromJson(json.decode(response.body));
