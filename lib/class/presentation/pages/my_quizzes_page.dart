@@ -4,8 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controllers/providers.dart';
 import '../../../iam/presentation/controllers/providers.dart';
 import 'create_quiz_page.dart';
-import 'quiz_detail_page.dart';
-import 'edit_quiz_page.dart';
+import '../widgets/quiz_loading_widget.dart';
+import '../widgets/quiz_error_widget.dart';
+import '../widgets/quiz_empty_widget.dart';
+import '../widgets/quiz_login_prompt_widget.dart';
+import '../widgets/quiz_list_widget.dart';
 
 class MyQuizzesPage extends ConsumerStatefulWidget {
   const MyQuizzesPage({super.key});
@@ -65,192 +68,25 @@ class _MyQuizzesPageState extends ConsumerState<MyQuizzesPage> {
 
   Widget _buildBody(state, authState) {
     if (authState.user == null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.login, size: 64, color: Colors.grey.shade400),
-            const SizedBox(height: 16),
-            Text(
-              'Please log in to view your quizzes',
-              style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
-            ),
-          ],
-        ),
-      );
+      return const QuizLoginPromptWidget();
     }
 
     if (state.loading) {
-      return const Center(child: CircularProgressIndicator());
+      return const QuizLoadingWidget();
     }
 
     if (state.error != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
-            const SizedBox(height: 16),
-            Text(
-              'Error: ${state.error}',
-              style: const TextStyle(color: Colors.red),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _loadQuizzes,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
-            ),
-          ],
-        ),
-      );
+      return QuizErrorWidget(error: state.error!, onRetry: _loadQuizzes);
     }
 
     if (state.quizzes.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.quiz_outlined, size: 64, color: Colors.grey.shade400),
-            const SizedBox(height: 16),
-            Text(
-              'No quizzes yet',
-              style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Create your first quiz to get started!',
-              style: TextStyle(color: Colors.grey.shade500),
-            ),
-          ],
-        ),
-      );
+      return const QuizEmptyWidget();
     }
 
-    return RefreshIndicator(
-      onRefresh: () async => _loadQuizzes(),
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: state.quizzes.length,
-        itemBuilder: (context, index) {
-          final quiz = state.quizzes[index];
-          return Card(
-            margin: const EdgeInsets.only(bottom: 12),
-            child: ListTile(
-              contentPadding: const EdgeInsets.all(16),
-              leading: CircleAvatar(
-                backgroundColor: quiz.isPublic ? Colors.green : Colors.orange,
-                child: Icon(
-                  quiz.isPublic ? Icons.public : Icons.quiz,
-                  color: Colors.white,
-                ),
-              ),
-              title: Text(
-                quiz.name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 4),
-                  Text(
-                    quiz.description,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Icon(Icons.category,
-                          size: 14, color: Colors.grey.shade600),
-                      const SizedBox(width: 4),
-                      Text(
-                        quiz.category,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Icon(Icons.question_answer,
-                          size: 14, color: Colors.grey.shade600),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${quiz.totalQuestions} questions',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              trailing: PopupMenuButton<String>(
-                onSelected: (value) {
-                  switch (value) {
-                    case 'view':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => QuizDetailPage(quizId: quiz.id),
-                        ),
-                      ).then((_) => _loadQuizzes());
-                      break;
-                    case 'edit':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditQuizPage(quiz: quiz),
-                        ),
-                      ).then((_) => _loadQuizzes());
-                      break;
-                    case 'delete':
-                      _showDeleteDialog(quiz.id, quiz.name);
-                      break;
-                  }
-                },
-                itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: 'view',
-                    child: Row(
-                      children: [
-                        Icon(Icons.visibility),
-                        SizedBox(width: 8),
-                        Text('View Details'),
-                      ],
-                    ),
-                  ),
-                  const PopupMenuItem(
-                    value: 'edit',
-                    child: Row(
-                      children: [
-                        Icon(Icons.edit),
-                        SizedBox(width: 8),
-                        Text('Edit'),
-                      ],
-                    ),
-                  ),
-                  const PopupMenuItem(
-                    value: 'delete',
-                    child: Row(
-                      children: [
-                        Icon(Icons.delete, color: Colors.red),
-                        SizedBox(width: 8),
-                        Text('Delete', style: TextStyle(color: Colors.red)),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
+    return QuizListWidget(
+      quizzes: state.quizzes,
+      onRefresh: _loadQuizzes,
+      onDelete: _showDeleteDialog,
     );
   }
 
