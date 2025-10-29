@@ -6,7 +6,7 @@ class AddQuestionUseCase {
 
   AddQuestionUseCase(this.repository);
 
-  Future<int> execute({
+  Future<void> execute({
     required int quizId,
     required String questionText,
     required String questionType,
@@ -19,7 +19,7 @@ class AddQuestionUseCase {
     required String token,
     required String userRole,
   }) async {
-    return await repository.addQuestion(
+    await repository.addQuestion(
       quizId: quizId,
       questionText: questionText,
       questionType: questionType,

@@ -5,26 +5,22 @@ import 'providers.dart';
 class QuestionFormState {
   final bool loading;
   final String? error;
-  final int? createdQuestionId;
   final bool success;
 
   QuestionFormState({
     this.loading = false,
     this.error,
-    this.createdQuestionId,
     this.success = false,
   });
 
   QuestionFormState copyWith({
     bool? loading,
     String? error,
-    int? createdQuestionId,
     bool? success,
   }) {
     return QuestionFormState(
       loading: loading ?? this.loading,
       error: error,
-      createdQuestionId: createdQuestionId ?? this.createdQuestionId,
       success: success ?? this.success,
     );
   }
@@ -53,7 +49,7 @@ class QuestionFormController extends Notifier<QuestionFormState> {
 
     try {
       final addQuestionUseCase = ref.read(addQuestionUseCaseProvider);
-      final questionId = await addQuestionUseCase.execute(
+      await addQuestionUseCase.execute(
         quizId: quizId,
         questionText: questionText,
         questionType: questionType,
@@ -70,7 +66,6 @@ class QuestionFormController extends Notifier<QuestionFormState> {
       state = state.copyWith(
         loading: false,
         success: true,
-        createdQuestionId: questionId,
       );
     } catch (e) {
       state = state.copyWith(loading: false, error: e.toString());

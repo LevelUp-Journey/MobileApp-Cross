@@ -151,7 +151,7 @@ class RestQuizRepository implements QuizRepository {
   }
 
   @override
-  Future<int> addQuestion({
+  Future<void> addQuestion({
     required int quizId,
     required String questionText,
     required String questionType,
@@ -188,8 +188,7 @@ class RestQuizRepository implements QuizRepository {
       throw Exception('Failed to add question: ${response.statusCode}');
     }
 
-    final data = jsonDecode(response.body) as Map<String, dynamic>;
-    return data['id'] as int;
+    // Question added successfully, no need to return id since it's not used
   }
 
   @override

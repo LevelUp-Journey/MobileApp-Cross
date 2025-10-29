@@ -43,7 +43,7 @@ abstract class QuizRepository {
   });
 
   /// Add a question to a quiz
-  Future<int> addQuestion({
+  Future<void> addQuestion({
     required int quizId,
     required String questionText,
     required String questionType,
