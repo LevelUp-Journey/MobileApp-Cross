@@ -30,12 +30,16 @@ abstract class QuizRepository {
     required String category,
     String? coverImageUrl,
     required String userId,
+    required String token,
+    required String userRole,
   });
 
   /// Delete a quiz
   Future<void> deleteQuiz({
     required int quizId,
     required String userId,
+    required String token,
+    required String userRole,
   });
 
   /// Add a question to a quiz

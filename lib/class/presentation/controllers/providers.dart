@@ -7,10 +7,12 @@ import '../../application/use_cases/create_quiz_use_case.dart';
 import '../../application/use_cases/get_my_quizzes_use_case.dart';
 import '../../application/use_cases/get_quiz_by_id_use_case.dart';
 import '../../application/use_cases/delete_quiz_use_case.dart';
+import '../../application/use_cases/update_quiz_use_case.dart';
 import '../../infrastructure/repositories_impl/rest_quiz_repository.dart';
 import '../../domain/repositories/quiz_repository.dart';
 import 'create_quiz_controller.dart';
 import 'my_quizzes_controller.dart';
+import 'update_quiz_controller.dart';
 
 // HTTP Client Provider (shared across the app)
 final httpClientProvider = Provider<http.Client>((ref) => http.Client());
@@ -48,6 +50,11 @@ final deleteQuizUseCaseProvider = Provider<DeleteQuizUseCase>((ref) {
   return DeleteQuizUseCase(repo);
 });
 
+final updateQuizUseCaseProvider = Provider<UpdateQuizUseCase>((ref) {
+  final repo = ref.watch(quizRepositoryProvider);
+  return UpdateQuizUseCase(repo);
+});
+
 // Controllers Providers
 final createQuizControllerProvider =
     NotifierProvider<CreateQuizController, CreateQuizState>(() {
@@ -67,6 +74,19 @@ final myQuizzesControllerProvider =
   return MyQuizzesController()
     ..setDependencies(
       GetMyQuizzesUseCase(
+        RestQuizRepository(
+          http.Client(),
+          baseUrl: Environment.classServerBaseUrl,
+        ),
+      ),
+    );
+});
+
+final updateQuizControllerProvider =
+    NotifierProvider<UpdateQuizController, UpdateQuizState>(() {
+  return UpdateQuizController()
+    ..setDependencies(
+      UpdateQuizUseCase(
         RestQuizRepository(
           http.Client(),
           baseUrl: Environment.classServerBaseUrl,

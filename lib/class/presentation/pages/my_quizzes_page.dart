@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controllers/providers.dart';
 import '../../../iam/presentation/controllers/providers.dart';
 import 'create_quiz_page.dart';
+import 'edit_quiz_page.dart';
 
 class MyQuizzesPage extends ConsumerStatefulWidget {
   const MyQuizzesPage({super.key});
@@ -192,10 +193,12 @@ class _MyQuizzesPageState extends ConsumerState<MyQuizzesPage> {
                 onSelected: (value) {
                   switch (value) {
                     case 'edit':
-                      // TODO: Navigate to edit page
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Edit feature coming soon')),
-                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditQuizPage(quiz: quiz),
+                        ),
+                      ).then((_) => _loadQuizzes());
                       break;
                     case 'delete':
                       _showDeleteDialog(quiz.id, quiz.name);
@@ -253,19 +256,53 @@ class _MyQuizzesPageState extends ConsumerState<MyQuizzesPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Quiz'),
-        content: Text('Are you sure you want to delete "$quizName"?'),
+        content: Text('Are you sure you want to delete "$quizName"? This action cannot be undone.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // TODO: Implement delete functionality
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Delete feature coming soon')),
-              );
+            onPressed: () async {
+              Navigator.pop(context); // Close dialog
+              
+              final authState = ref.read(authControllerProvider);
+              if (authState.user == null || authState.token == null || authState.roles.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Authentication required'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+                return;
+              }
+
+              try {
+                final deleteUseCase = ref.read(deleteQuizUseCaseProvider);
+                await deleteUseCase.execute(
+                  quizId: quizId,
+                  userId: authState.user!.id,
+                  token: authState.token!,
+                  userRole: authState.roles.first,
+                );
+                
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Quiz deleted successfully'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+                
+                // Reload quizzes
+                _loadQuizzes();
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Error deleting quiz: $e'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),

@@ -9,10 +9,14 @@ class DeleteQuizUseCase {
   Future<void> execute({
     required int quizId,
     required String userId,
+    required String token,
+    required String userRole,
   }) async {
     return await repository.deleteQuiz(
       quizId: quizId,
       userId: userId,
+      token: token,
+      userRole: userRole,
     );
   }
 }

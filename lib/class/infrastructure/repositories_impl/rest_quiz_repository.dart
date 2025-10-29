@@ -96,21 +96,32 @@ class RestQuizRepository implements QuizRepository {
     required String category,
     String? coverImageUrl,
     required String userId,
+    required String token,
+    required String userRole,
   }) async {
+    final url = '$baseUrl/api/v1/quizzes/$quizId';
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+      'X-User-Id': userId,
+      'X-User-Role': userRole,
+    };
+    final bodyData = {
+      'name': name,
+      'description': description,
+      'category': category,
+      'coverImageUrl': coverImageUrl,
+      'userId': userId,
+    };
+
     final response = await client.put(
-      Uri.parse('$baseUrl/api/v1/quizzes/$quizId'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'name': name,
-        'description': description,
-        'category': category,
-        'coverImageUrl': coverImageUrl,
-        'userId': userId,
-      }),
+      Uri.parse(url),
+      headers: headers,
+      body: jsonEncode(bodyData),
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Failed to update quiz: ${response.statusCode}');
+      throw Exception('Failed to update quiz: ${response.statusCode} - ${response.body}');
     }
   }
 
@@ -118,15 +129,24 @@ class RestQuizRepository implements QuizRepository {
   Future<void> deleteQuiz({
     required int quizId,
     required String userId,
+    required String token,
+    required String userRole,
   }) async {
     final uri = Uri.parse('$baseUrl/api/v1/quizzes/$quizId').replace(
       queryParameters: {'userId': userId},
     );
 
-    final response = await client.delete(uri);
+    final response = await client.delete(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'X-User-Id': userId,
+        'X-User-Role': userRole,
+      },
+    );
 
     if (response.statusCode != 200) {
-      throw Exception('Failed to delete quiz: ${response.statusCode}');
+      throw Exception('Failed to delete quiz: ${response.statusCode} - ${response.body}');
     }
   }
 
