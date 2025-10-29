@@ -11,6 +11,7 @@ import '../../application/use_cases/update_quiz_use_case.dart';
 import '../../application/use_cases/add_question_use_case.dart';
 import '../../application/use_cases/update_question_use_case.dart';
 import '../../application/use_cases/delete_question_use_case.dart';
+import '../../application/use_cases/get_question_use_case.dart';
 import '../../application/use_cases/publish_quiz_use_case.dart';
 import '../../infrastructure/repositories_impl/rest_quiz_repository.dart';
 import '../../domain/repositories/quiz_repository.dart';
@@ -74,6 +75,11 @@ final updateQuestionUseCaseProvider = Provider<UpdateQuestionUseCase>((ref) {
 final deleteQuestionUseCaseProvider = Provider<DeleteQuestionUseCase>((ref) {
   final repo = ref.watch(quizRepositoryProvider);
   return DeleteQuestionUseCase(repo);
+});
+
+final getQuestionUseCaseProvider = Provider<GetQuestionUseCase>((ref) {
+  final repo = ref.watch(quizRepositoryProvider);
+  return GetQuestionUseCase(repo);
 });
 
 final publishQuizUseCaseProvider = Provider<PublishQuizUseCase>((ref) {

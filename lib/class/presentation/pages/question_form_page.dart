@@ -28,6 +28,7 @@ class _QuestionFormPageState extends ConsumerState<QuestionFormPage> {
   String _questionType = 'MULTIPLE_CHOICE';
   final List<TextEditingController> _answerControllers = [];
   int _correctAnswerIndex = 0;
+  bool _loadingQuestion = false;
 
   @override
   void initState() {
@@ -37,14 +38,75 @@ class _QuestionFormPageState extends ConsumerState<QuestionFormPage> {
       _answerControllers.add(TextEditingController());
     }
 
-    // TODO: If editing, load question data
+    // If editing, load question data
     if (widget.questionId != null) {
       _loadQuestionData();
     }
   }
 
-  void _loadQuestionData() {
-    // TODO: Load question data from API
+  Future<void> _loadQuestionData() async {
+    setState(() {
+      _loadingQuestion = true;
+    });
+
+    try {
+      final authState = ref.read(authControllerProvider);
+      if (authState.user == null || authState.token == null || authState.roles.isEmpty) {
+        throw Exception('Not authenticated');
+      }
+
+      final getQuestionUseCase = ref.read(getQuestionUseCaseProvider);
+      final question = await getQuestionUseCase.execute(
+        quizId: widget.quizId,
+        questionId: widget.questionId!,
+        userId: authState.user!.id,
+        token: authState.token!,
+        userRole: authState.roles.first,
+      );
+
+      // Populate controllers
+      _questionTextController.text = question.content;
+      _questionType = question.questionType;
+      _timeLimitController.text = question.timeLimitSeconds.toString();
+      _pointsController.text = question.points.toString();
+      // _mediaUrlController.text = question.mediaUrl ?? ''; // Not available in Question entity
+
+      // Handle answers
+      for (var controller in _answerControllers) {
+        controller.dispose();
+      }
+      _answerControllers.clear();
+
+      for (int i = 0; i < question.answers.length; i++) {
+        final answer = question.answers[i];
+        _answerControllers.add(TextEditingController(text: answer.content));
+        if (answer.isCorrect) {
+          _correctAnswerIndex = i;
+        }
+      }
+
+      // If TRUE_FALSE, ensure it's set correctly
+      if (_questionType == 'TRUE_FALSE' && _answerControllers.length == 2) {
+        _answerControllers[0].text = 'True';
+        _answerControllers[1].text = 'False';
+      }
+
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error loading question: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _loadingQuestion = false;
+        });
+      }
+    }
   }
 
   @override
@@ -173,6 +235,17 @@ class _QuestionFormPageState extends ConsumerState<QuestionFormPage> {
   Widget build(BuildContext context) {
     final isEditing = widget.questionId != null;
     final questionFormState = ref.watch(questionFormControllerProvider);
+
+    if (_loadingQuestion) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(isEditing ? 'Edit Question' : 'Add Question'),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(

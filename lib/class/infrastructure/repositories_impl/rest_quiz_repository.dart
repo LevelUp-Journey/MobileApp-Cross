@@ -259,6 +259,36 @@ class RestQuizRepository implements QuizRepository {
   }
 
   @override
+  Future<Question> getQuestionById({
+    required int quizId,
+    required int questionId,
+    required String userId,
+    required String token,
+    required String userRole,
+  }) async {
+    final uri = Uri.parse(
+      '$baseUrl/api/v1/quizzes/$quizId/questions/$questionId',
+    ).replace(queryParameters: {'userId': userId});
+
+    final response = await client.get(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+        'X-User-Id': userId,
+        'X-User-Role': userRole,
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to get question: ${response.statusCode}');
+    }
+
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return _parseQuestion(data);
+  }
+
+  @override
   Future<void> publishQuiz({
     required int quizId,
     required String userId,

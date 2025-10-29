@@ -1,5 +1,6 @@
 // class/domain/repositories/quiz_repository.dart
 import '../entities/quiz.dart';
+import '../entities/question.dart';
 
 abstract class QuizRepository {
   /// Create a new quiz
@@ -75,6 +76,15 @@ abstract class QuizRepository {
 
   /// Delete a question from a quiz
   Future<void> deleteQuestion({
+    required int quizId,
+    required int questionId,
+    required String userId,
+    required String token,
+    required String userRole,
+  });
+
+  /// Get a question by id
+  Future<Question> getQuestionById({
     required int quizId,
     required int questionId,
     required String userId,
