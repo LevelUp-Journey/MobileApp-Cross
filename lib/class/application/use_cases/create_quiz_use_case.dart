@@ -12,6 +12,8 @@ class CreateQuizUseCase {
     required String category,
     String? coverImageUrl,
     required String creatorId,
+    required String token,
+    required String userRole,
   }) async {
     return await repository.createQuiz(
       name: name,
@@ -19,6 +21,8 @@ class CreateQuizUseCase {
       category: category,
       coverImageUrl: coverImageUrl,
       creatorId: creatorId,
+      token: token,
+      userRole: userRole,
     );
   }
 }

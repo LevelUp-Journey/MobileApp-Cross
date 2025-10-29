@@ -19,31 +19,62 @@ class RestQuizRepository implements QuizRepository {
     required String category,
     String? coverImageUrl,
     required String creatorId,
+    required String token,
+    required String userRole,
   }) async {
-    final response = await client.post(
-      Uri.parse('$baseUrl/api/v1/quizzes'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'name': name,
-        'description': description,
-        'category': category,
-        'coverImageUrl': coverImageUrl,
-        'creatorId': creatorId,
-      }),
-    );
+    final url = '$baseUrl/api/v1/quizzes';
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+      'X-User-Id': creatorId,
+      'X-User-Role': userRole,
+    };
+    final bodyData = {
+      'name': name,
+      'description': description,
+      'category': category,
+      'coverImageUrl': coverImageUrl,
+      'creatorId': creatorId,
+    };
 
-    if (response.statusCode != 201) {
-      throw Exception('Failed to create quiz: ${response.statusCode}');
+    print('=== REPOSITORY DEBUG ===');
+    print('URL: $url');
+    print('Headers: $headers');
+    print('Body: ${jsonEncode(bodyData)}');
+    print('========================');
+
+    try {
+      final response = await client.post(
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(bodyData),
+      );
+
+      print('=== RESPONSE DEBUG ===');
+      print('Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+      print('======================');
+
+      if (response.statusCode != 201) {
+        throw Exception('Failed to create quiz: ${response.statusCode} - ${response.body}');
+      }
+
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      return data['id'] as int;
+    } catch (e) {
+      print('=== ERROR CREATING QUIZ ===');
+      print('Error: $e');
+      print('===========================');
+      rethrow;
     }
-
-    final data = jsonDecode(response.body) as Map<String, dynamic>;
-    return data['id'] as int;
   }
 
   @override
   Future<Quiz> getQuizById({
     required int quizId,
     required String userId,
+    required String token,
+    required String userRole,
     bool includeQuestions = true,
   }) async {
     final uri = Uri.parse('$baseUrl/api/v1/quizzes/$quizId').replace(
@@ -53,7 +84,15 @@ class RestQuizRepository implements QuizRepository {
       },
     );
 
-    final response = await client.get(uri);
+    final response = await client.get(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+        'X-User-Id': userId,
+        'X-User-Role': userRole,
+      },
+    );
 
     if (response.statusCode != 200) {
       throw Exception('Failed to get quiz: ${response.statusCode}');
@@ -239,6 +278,8 @@ class RestQuizRepository implements QuizRepository {
   @override
   Future<List<Quiz>> getMyQuizzes({
     required String userId,
+    required String token,
+    required String userRole,
     String? category,
     String? search,
     int page = 0,
@@ -257,10 +298,18 @@ class RestQuizRepository implements QuizRepository {
       queryParameters: queryParams,
     );
 
-    final response = await client.get(uri);
+    final response = await client.get(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+        'X-User-Id': userId,
+        'X-User-Role': userRole,
+      },
+    );
 
     if (response.statusCode != 200) {
-      throw Exception('Failed to get my quizzes: ${response.statusCode}');
+      throw Exception('Failed to get my quizzes: ${response.statusCode} - ${response.body}');
     }
 
     final data = jsonDecode(response.body) as Map<String, dynamic>;

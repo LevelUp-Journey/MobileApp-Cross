@@ -33,7 +33,7 @@ class _CreateQuizPageState extends ConsumerState<CreateQuizPage> {
     }
 
     final authState = ref.read(authControllerProvider);
-    if (authState.user == null) {
+    if (authState.user == null || authState.token == null || authState.roles.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('You must be logged in to create a quiz'),
@@ -42,6 +42,14 @@ class _CreateQuizPageState extends ConsumerState<CreateQuizPage> {
       );
       return;
     }
+
+    // Debug: Print auth info
+    print('=== DEBUG CREATE QUIZ ===');
+    print('User ID: ${authState.user!.id}');
+    print('Token: ${authState.token!.substring(0, 20)}...');
+    print('Roles: ${authState.roles}');
+    print('First Role: ${authState.roles.first}');
+    print('========================');
 
     final controller = ref.read(createQuizControllerProvider.notifier);
     controller.submit(
@@ -52,6 +60,8 @@ class _CreateQuizPageState extends ConsumerState<CreateQuizPage> {
           ? null
           : _coverImageUrlController.text.trim(),
       creatorId: authState.user!.id,
+      token: authState.token!,
+      userRole: authState.roles.first,
     );
   }
 

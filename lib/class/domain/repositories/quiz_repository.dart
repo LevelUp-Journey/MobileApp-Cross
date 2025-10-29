@@ -9,12 +9,16 @@ abstract class QuizRepository {
     required String category,
     String? coverImageUrl,
     required String creatorId,
+    required String token,
+    required String userRole,
   });
 
   /// Get a specific quiz by ID
   Future<Quiz> getQuizById({
     required int quizId,
     required String userId,
+    required String token,
+    required String userRole,
     bool includeQuestions = true,
   });
 
@@ -85,6 +89,8 @@ abstract class QuizRepository {
   /// Get quizzes created by the current user (paginated)
   Future<List<Quiz>> getMyQuizzes({
     required String userId,
+    required String token,
+    required String userRole,
     String? category,
     String? search,
     int page = 0,

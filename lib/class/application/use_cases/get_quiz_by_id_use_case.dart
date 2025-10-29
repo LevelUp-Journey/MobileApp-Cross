@@ -10,11 +10,15 @@ class GetQuizByIdUseCase {
   Future<Quiz> execute({
     required int quizId,
     required String userId,
+    required String token,
+    required String userRole,
     bool includeQuestions = true,
   }) async {
     return await repository.getQuizById(
       quizId: quizId,
       userId: userId,
+      token: token,
+      userRole: userRole,
       includeQuestions: includeQuestions,
     );
   }

@@ -40,6 +40,8 @@ class MyQuizzesController extends Notifier<MyQuizzesState> {
 
   Future<void> loadQuizzes({
     required String userId,
+    required String token,
+    required String userRole,
     String? category,
     String? search,
     int page = 0,
@@ -49,6 +51,8 @@ class MyQuizzesController extends Notifier<MyQuizzesState> {
     try {
       final quizzes = await _getMyQuizzes.execute(
         userId: userId,
+        token: token,
+        userRole: userRole,
         category: category,
         search: search,
         page: page,

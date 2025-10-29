@@ -24,9 +24,11 @@ class _MyQuizzesPageState extends ConsumerState<MyQuizzesPage> {
 
   void _loadQuizzes() {
     final authState = ref.read(authControllerProvider);
-    if (authState.user != null) {
+    if (authState.user != null && authState.token != null && authState.roles.isNotEmpty) {
       ref.read(myQuizzesControllerProvider.notifier).loadQuizzes(
             userId: authState.user!.id,
+            token: authState.token!,
+            userRole: authState.roles.first,
           );
     }
   }

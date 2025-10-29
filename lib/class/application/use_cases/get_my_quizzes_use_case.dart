@@ -9,6 +9,8 @@ class GetMyQuizzesUseCase {
 
   Future<List<Quiz>> execute({
     required String userId,
+    required String token,
+    required String userRole,
     String? category,
     String? search,
     int page = 0,
@@ -16,6 +18,8 @@ class GetMyQuizzesUseCase {
   }) async {
     return await repository.getMyQuizzes(
       userId: userId,
+      token: token,
+      userRole: userRole,
       category: category,
       search: search,
       page: page,

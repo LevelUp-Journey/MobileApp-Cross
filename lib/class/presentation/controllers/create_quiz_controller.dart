@@ -43,6 +43,8 @@ class CreateQuizController extends Notifier<CreateQuizState> {
     required String category,
     String? coverImageUrl,
     required String creatorId,
+    required String token,
+    required String userRole,
   }) async {
     state = state.copyWith(loading: true, error: null);
     try {
@@ -52,6 +54,8 @@ class CreateQuizController extends Notifier<CreateQuizState> {
         category: category,
         coverImageUrl: coverImageUrl,
         creatorId: creatorId,
+        token: token,
+        userRole: userRole,
       );
       state = CreateQuizState(createdQuizId: quizId);
     } catch (e) {
