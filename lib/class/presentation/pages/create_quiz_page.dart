@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controllers/providers.dart';
 import '../../../iam/presentation/controllers/providers.dart';
+import 'quiz_detail_page.dart';
 
 class CreateQuizPage extends ConsumerStatefulWidget {
   const CreateQuizPage({super.key});
@@ -64,21 +65,28 @@ class _CreateQuizPageState extends ConsumerState<CreateQuizPage> {
     // Listen for successful creation
     ref.listen(createQuizControllerProvider, (previous, next) {
       if (next.createdQuizId != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Quiz created successfully! ID: ${next.createdQuizId}'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        // Reset form
+        // Reset form and controller
         _formKey.currentState?.reset();
         _nameController.clear();
         _descriptionController.clear();
         _categoryController.clear();
         _coverImageUrlController.clear();
         ref.read(createQuizControllerProvider.notifier).reset();
-        // Navigate back or to quiz details
-        Navigator.pop(context);
+
+        // Navigate to quiz detail page to add questions
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => QuizDetailPage(quizId: next.createdQuizId!),
+          ),
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Quiz created! Now add some questions.'),
+            backgroundColor: Colors.green,
+          ),
+        );
       }
 
       if (next.error != null) {

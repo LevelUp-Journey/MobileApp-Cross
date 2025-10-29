@@ -53,6 +53,8 @@ abstract class QuizRepository {
     required int correctAnswerIndex,
     String? mediaUrl,
     required String userId,
+    required String token,
+    required String userRole,
   });
 
   /// Update a question in a quiz
@@ -67,6 +69,8 @@ abstract class QuizRepository {
     required int correctAnswerIndex,
     String? mediaUrl,
     required String userId,
+    required String token,
+    required String userRole,
   });
 
   /// Delete a question from a quiz
@@ -74,12 +78,16 @@ abstract class QuizRepository {
     required int quizId,
     required int questionId,
     required String userId,
+    required String token,
+    required String userRole,
   });
 
   /// Publish a quiz
   Future<void> publishQuiz({
     required int quizId,
     required String userId,
+    required String token,
+    required String userRole,
   });
 
   /// Get public quizzes (paginated)

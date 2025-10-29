@@ -161,10 +161,17 @@ class RestQuizRepository implements QuizRepository {
     required int correctAnswerIndex,
     String? mediaUrl,
     required String userId,
+    required String token,
+    required String userRole,
   }) async {
     final response = await client.post(
       Uri.parse('$baseUrl/api/v1/quizzes/$quizId/questions'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+        'X-User-Id': userId,
+        'X-User-Role': userRole,
+      },
       body: jsonEncode({
         'questionText': questionText,
         'questionType': questionType,
@@ -197,10 +204,17 @@ class RestQuizRepository implements QuizRepository {
     required int correctAnswerIndex,
     String? mediaUrl,
     required String userId,
+    required String token,
+    required String userRole,
   }) async {
     final response = await client.put(
       Uri.parse('$baseUrl/api/v1/quizzes/$quizId/questions/$questionId'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+        'X-User-Id': userId,
+        'X-User-Role': userRole,
+      },
       body: jsonEncode({
         'questionText': questionText,
         'questionType': questionType,
@@ -223,12 +237,22 @@ class RestQuizRepository implements QuizRepository {
     required int quizId,
     required int questionId,
     required String userId,
+    required String token,
+    required String userRole,
   }) async {
     final uri = Uri.parse(
       '$baseUrl/api/v1/quizzes/$quizId/questions/$questionId',
     ).replace(queryParameters: {'userId': userId});
 
-    final response = await client.delete(uri);
+    final response = await client.delete(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+        'X-User-Id': userId,
+        'X-User-Role': userRole,
+      },
+    );
 
     if (response.statusCode != 200) {
       throw Exception('Failed to delete question: ${response.statusCode}');
@@ -239,12 +263,22 @@ class RestQuizRepository implements QuizRepository {
   Future<void> publishQuiz({
     required int quizId,
     required String userId,
+    required String token,
+    required String userRole,
   }) async {
     final uri = Uri.parse('$baseUrl/api/v1/quizzes/$quizId/publish').replace(
       queryParameters: {'userId': userId},
     );
 
-    final response = await client.post(uri);
+    final response = await client.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+        'X-User-Id': userId,
+        'X-User-Role': userRole,
+      },
+    );
 
     if (response.statusCode != 200) {
       throw Exception('Failed to publish quiz: ${response.statusCode}');

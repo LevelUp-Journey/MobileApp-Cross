@@ -8,11 +8,17 @@ import '../../application/use_cases/get_my_quizzes_use_case.dart';
 import '../../application/use_cases/get_quiz_by_id_use_case.dart';
 import '../../application/use_cases/delete_quiz_use_case.dart';
 import '../../application/use_cases/update_quiz_use_case.dart';
+import '../../application/use_cases/add_question_use_case.dart';
+import '../../application/use_cases/update_question_use_case.dart';
+import '../../application/use_cases/delete_question_use_case.dart';
+import '../../application/use_cases/publish_quiz_use_case.dart';
 import '../../infrastructure/repositories_impl/rest_quiz_repository.dart';
 import '../../domain/repositories/quiz_repository.dart';
 import 'create_quiz_controller.dart';
 import 'my_quizzes_controller.dart';
 import 'update_quiz_controller.dart';
+import 'quiz_detail_controller.dart';
+import 'question_form_controller.dart';
 
 // HTTP Client Provider (shared across the app)
 final httpClientProvider = Provider<http.Client>((ref) => http.Client());
@@ -55,6 +61,26 @@ final updateQuizUseCaseProvider = Provider<UpdateQuizUseCase>((ref) {
   return UpdateQuizUseCase(repo);
 });
 
+final addQuestionUseCaseProvider = Provider<AddQuestionUseCase>((ref) {
+  final repo = ref.watch(quizRepositoryProvider);
+  return AddQuestionUseCase(repo);
+});
+
+final updateQuestionUseCaseProvider = Provider<UpdateQuestionUseCase>((ref) {
+  final repo = ref.watch(quizRepositoryProvider);
+  return UpdateQuestionUseCase(repo);
+});
+
+final deleteQuestionUseCaseProvider = Provider<DeleteQuestionUseCase>((ref) {
+  final repo = ref.watch(quizRepositoryProvider);
+  return DeleteQuestionUseCase(repo);
+});
+
+final publishQuizUseCaseProvider = Provider<PublishQuizUseCase>((ref) {
+  final repo = ref.watch(quizRepositoryProvider);
+  return PublishQuizUseCase(repo);
+});
+
 // Controllers Providers
 final createQuizControllerProvider =
     NotifierProvider<CreateQuizController, CreateQuizState>(() {
@@ -93,4 +119,14 @@ final updateQuizControllerProvider =
         ),
       ),
     );
+});
+
+final quizDetailControllerProvider =
+    NotifierProvider<QuizDetailController, QuizDetailState>(() {
+  return QuizDetailController();
+});
+
+final questionFormControllerProvider =
+    NotifierProvider<QuestionFormController, QuestionFormState>(() {
+  return QuestionFormController();
 });

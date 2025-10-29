@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controllers/providers.dart';
 import '../../../iam/presentation/controllers/providers.dart';
 import 'create_quiz_page.dart';
+import 'quiz_detail_page.dart';
 import 'edit_quiz_page.dart';
 
 class MyQuizzesPage extends ConsumerStatefulWidget {
@@ -192,6 +193,14 @@ class _MyQuizzesPageState extends ConsumerState<MyQuizzesPage> {
               trailing: PopupMenuButton<String>(
                 onSelected: (value) {
                   switch (value) {
+                    case 'view':
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => QuizDetailPage(quizId: quiz.id),
+                        ),
+                      ).then((_) => _loadQuizzes());
+                      break;
                     case 'edit':
                       Navigator.push(
                         context,
@@ -202,12 +211,6 @@ class _MyQuizzesPageState extends ConsumerState<MyQuizzesPage> {
                       break;
                     case 'delete':
                       _showDeleteDialog(quiz.id, quiz.name);
-                      break;
-                    case 'view':
-                      // TODO: Navigate to quiz details
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('View feature coming soon')),
-                      );
                       break;
                   }
                 },
