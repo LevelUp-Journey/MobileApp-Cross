@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:levelup_journey/shared/services/cloudinary_service.dart';
 
 import '../../domain/entities/profile.dart';
 import '../controllers/profile_state.dart';
@@ -9,6 +7,8 @@ import '../controllers/providers.dart';
 import '../components/profile_image_widget.dart';
 import '../components/profile_form_widget.dart';
 import '../components/save_profile_button.dart';
+import '../components/roles_widget.dart';
+import '../../../iam/presentation/controllers/providers.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -23,9 +23,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   late TextEditingController _firstNameController;
   late TextEditingController _lastNameController;
   late TextEditingController _profileUrlController;
-
-  final ImagePicker _picker = ImagePicker();
-  final CloudinaryService _cloudinaryService = CloudinaryService();
 
   @override
   void initState() {
@@ -80,6 +77,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileControllerProvider);
+    final authState = ref.watch(authControllerProvider);
 
     ref.listen<ProfileState>(profileControllerProvider, (previous, next) {
       if (next.profile != null && (previous?.profile != next.profile)) {
@@ -103,9 +101,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                             const SizedBox(height: 20),
                             ProfileImageWidget(
                               profileUrlController: _profileUrlController,
-                              picker: _picker,
-                              cloudinaryService: _cloudinaryService,
                             ),
+                            const SizedBox(height: 20),
+                            RolesWidget(roles: authState.roles),
                             const SizedBox(height: 20),
                             ProfileFormWidget(
                               formKey: _formKey,

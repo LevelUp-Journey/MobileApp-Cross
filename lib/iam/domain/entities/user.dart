@@ -5,7 +5,14 @@ class User {
   final String id;
   final Email email;
   final String? token;
-  const User({required this.id, required this.email, this.token});
+  final List<String> roles;
+
+  const User({
+    required this.id,
+    required this.email,
+    this.token,
+    this.roles = const [],
+  });
 
   @override
   bool operator ==(Object other) =>

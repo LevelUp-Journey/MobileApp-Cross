@@ -22,7 +22,12 @@ class AuthController extends Notifier<AuthState> {
     state = state.copyWith(loading: true, error: null);
     try {
       final user = await _signIn.execute(email: email, password: password);
-      state = AuthState(user: user, isAuthenticated: true);
+      state = AuthState(
+        user: user,
+        isAuthenticated: true,
+        token: user.token,
+        roles: user.roles,
+      );
     } catch (e) {
       state = AuthState(error: e.toString());
     }
@@ -32,7 +37,12 @@ class AuthController extends Notifier<AuthState> {
     state = state.copyWith(loading: true, error: null);
     try {
       final user = await _signUp.execute(email: email, password: password);
-      state = AuthState(user: user, isAuthenticated: true);
+      state = AuthState(
+        user: user,
+        isAuthenticated: true,
+        token: user.token,
+        roles: user.roles,
+      );
     } catch (e) {
       state = AuthState(error: e.toString());
     }

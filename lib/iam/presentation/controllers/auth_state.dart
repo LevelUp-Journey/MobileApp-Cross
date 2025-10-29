@@ -7,6 +7,7 @@ class AuthState {
   final String? error;
   final bool isAuthenticated;
   final String? token;
+  final List<String> roles;
 
   const AuthState({
     this.loading = false,
@@ -14,6 +15,7 @@ class AuthState {
     this.error,
     this.isAuthenticated = false,
     this.token,
+    this.roles = const [],
   });
 
   AuthState copyWith({
@@ -22,6 +24,7 @@ class AuthState {
     String? error,
     bool? isAuthenticated,
     String? token,
+    List<String>? roles,
   }) =>
       AuthState(
         loading: loading ?? this.loading,
@@ -29,5 +32,6 @@ class AuthState {
         error: error ?? this.error,
         isAuthenticated: isAuthenticated ?? this.isAuthenticated,
         token: token ?? this.token,
+        roles: roles ?? this.roles,
       );
 }
