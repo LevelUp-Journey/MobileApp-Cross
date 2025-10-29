@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import '../../../shared/config.dart';
 import '../../../shared/environments/environment.dart';
 import '../../domain/entities/profile.dart';
 import '../../domain/repositories/profile_repository.dart';
@@ -13,7 +14,7 @@ class RestProfileRepository implements ProfileRepository {
   @override
   Future<Profile> getProfileByUserId(String userId, {required String token}) async {
     final uri = Uri.parse(
-        '${Environment.profileserverBaseUrl}${Environment.getProfileByUserIdEndpoint}/$userId');
+        '${Config.profileBaseUrl}${Environment.getProfileByUserIdEndpoint}/$userId');
     if (kDebugMode) {
       print('Requesting profile from: $uri');
     }
@@ -35,7 +36,7 @@ class RestProfileRepository implements ProfileRepository {
   @override
   Future<Profile> updateProfile(Profile profile, {required String token}) async {
     final uri = Uri.parse(
-        '${Environment.profileserverBaseUrl}${Environment.updateProfileEndpoint}/${profile.id}');
+        '${Config.profileBaseUrl}${Environment.updateProfileEndpoint}/${profile.id}');
     if (kDebugMode) {
       print('Updating profile at: $uri');
       print('Profile data: ${jsonEncode(profile.toJson())}');

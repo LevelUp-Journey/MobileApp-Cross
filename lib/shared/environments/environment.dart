@@ -12,5 +12,8 @@ class Environment {
   static const String getProfileByUserIdEndpoint = '/api/v1/profiles/user';
   static const String updateProfileEndpoint = '/api/v1/profiles';
 
- 
+  // Community service endpoints
+  static const String communityserverBaseUrl = 'http://localhost:8086';
+  static const String getAllCommunitiesEndpoint = '/api/v1/communities';
+
 }
