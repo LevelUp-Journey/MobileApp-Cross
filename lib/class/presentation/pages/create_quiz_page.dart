@@ -43,14 +43,6 @@ class _CreateQuizPageState extends ConsumerState<CreateQuizPage> {
       return;
     }
 
-    // Debug: Print auth info
-    print('=== DEBUG CREATE QUIZ ===');
-    print('User ID: ${authState.user!.id}');
-    print('Token: ${authState.token!.substring(0, 20)}...');
-    print('Roles: ${authState.roles}');
-    print('First Role: ${authState.roles.first}');
-    print('========================');
-
     final controller = ref.read(createQuizControllerProvider.notifier);
     controller.submit(
       name: _nameController.text.trim(),
@@ -219,41 +211,6 @@ class _CreateQuizPageState extends ConsumerState<CreateQuizPage> {
                       ),
               ),
               const SizedBox(height: 16),
-
-              // Info Card
-              Card(
-                color: Colors.blue.shade50,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.info_outline, color: Colors.blue.shade700),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Next Steps',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue.shade700,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'After creating your quiz, you\'ll be able to:\n'
-                        '• Add questions to your quiz\n'
-                        '• Configure quiz settings\n'
-                        '• Publish your quiz to make it available',
-                        style: TextStyle(color: Colors.blue.shade900),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
             ],
           ),
         ),

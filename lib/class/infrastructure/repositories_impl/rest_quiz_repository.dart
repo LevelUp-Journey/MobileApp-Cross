@@ -37,23 +37,12 @@ class RestQuizRepository implements QuizRepository {
       'creatorId': creatorId,
     };
 
-    print('=== REPOSITORY DEBUG ===');
-    print('URL: $url');
-    print('Headers: $headers');
-    print('Body: ${jsonEncode(bodyData)}');
-    print('========================');
-
     try {
       final response = await client.post(
         Uri.parse(url),
         headers: headers,
         body: jsonEncode(bodyData),
       );
-
-      print('=== RESPONSE DEBUG ===');
-      print('Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
-      print('======================');
 
       if (response.statusCode != 201) {
         throw Exception('Failed to create quiz: ${response.statusCode} - ${response.body}');
@@ -62,9 +51,6 @@ class RestQuizRepository implements QuizRepository {
       final data = jsonDecode(response.body) as Map<String, dynamic>;
       return data['id'] as int;
     } catch (e) {
-      print('=== ERROR CREATING QUIZ ===');
-      print('Error: $e');
-      print('===========================');
       rethrow;
     }
   }
