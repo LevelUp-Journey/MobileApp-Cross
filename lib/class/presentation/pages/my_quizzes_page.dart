@@ -140,7 +140,7 @@ class _MyQuizzesPageState extends ConsumerState<MyQuizzesPage> {
               leading: CircleAvatar(
                 backgroundColor: quiz.isPublic ? Colors.green : Colors.orange,
                 child: Icon(
-                  quiz.isPublic ? Icons.public : Icons.lock,
+                  quiz.isPublic ? Icons.public : Icons.quiz,
                   color: Colors.white,
                 ),
               ),

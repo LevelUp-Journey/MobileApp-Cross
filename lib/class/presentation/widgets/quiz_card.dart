@@ -149,7 +149,7 @@ class QuizCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            quiz.isPublic ? Icons.public : Icons.lock,
+            quiz.isPublic ? Icons.public : Icons.quiz,
             size: 14,
             color: quiz.isPublic ? Colors.green.shade700 : Colors.orange.shade700,
           ),
