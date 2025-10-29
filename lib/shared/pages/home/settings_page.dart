@@ -26,7 +26,6 @@ class SettingsPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             // Here you can add configuration options
-            Text('Coming soon: Theme, Language, Notifications, etc.'),
           ],
         ),
       ),

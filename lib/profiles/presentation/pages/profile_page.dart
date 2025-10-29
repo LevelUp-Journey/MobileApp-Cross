@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../domain/entities/profile.dart';
 import '../controllers/profile_state.dart';
@@ -24,8 +23,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   late TextEditingController _firstNameController;
   late TextEditingController _lastNameController;
   late TextEditingController _profileUrlController;
-
-  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -104,7 +101,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                             const SizedBox(height: 20),
                             ProfileImageWidget(
                               profileUrlController: _profileUrlController,
-                              picker: _picker,
                             ),
                             const SizedBox(height: 20),
                             RolesWidget(roles: authState.roles),

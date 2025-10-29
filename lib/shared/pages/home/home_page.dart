@@ -162,7 +162,6 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
           const SizedBox(height: 20),
           // Here you can add more configuration options
-          const Text('Coming soon: Theme, Language, Notifications, etc.'),
         ],
       ),
     );
