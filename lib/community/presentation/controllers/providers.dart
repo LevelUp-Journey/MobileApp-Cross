@@ -52,7 +52,7 @@ import 'subscription_state.dart';
 
 // Shared providers
 final httpClientProvider = Provider<http.Client>((ref) => http.Client());
-final communityBaseUrlProvider = Provider<String>((ref) => Environment.communityserverBaseUrl);
+final communityBaseUrlProvider = Provider<String>((ref) => Environment.baseUrl);
 
 // Remote data sources
 final communityRemoteDataSourceProvider = Provider<CommunityRemoteDataSource>((ref) {

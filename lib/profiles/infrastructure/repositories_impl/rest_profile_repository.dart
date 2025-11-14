@@ -13,7 +13,7 @@ class RestProfileRepository implements ProfileRepository {
   @override
   Future<Profile> getProfileByUserId(String userId, {required String token}) async {
     final uri = Uri.parse(
-        '${Config.profileBaseUrl}${Environment.getProfileByUserIdEndpoint}/$userId');
+        '${Config.baseUrl}${Environment.getProfileByUserIdEndpoint}/$userId');
     final response = await client.get(uri, headers: {
       'Authorization': 'Bearer $token',
     });
@@ -28,7 +28,7 @@ class RestProfileRepository implements ProfileRepository {
   @override
   Future<Profile> updateProfile(Profile profile, {required String token}) async {
     final uri = Uri.parse(
-        '${Config.profileBaseUrl}${Environment.updateProfileEndpoint}/${profile.id}');
+        '${Config.baseUrl}${Environment.updateProfileEndpoint}/${profile.id}');
     final response = await client.put(
       uri,
       headers: {
