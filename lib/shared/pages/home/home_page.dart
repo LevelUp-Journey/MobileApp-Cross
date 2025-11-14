@@ -6,8 +6,6 @@ import '../../../iam/presentation/pages/login_page.dart';
 import '../../components/appbar_widget.dart';
 import '../../components/bottom_navigation_widget.dart';
 import '../../../profiles/presentation/pages/profile_page.dart';
-import '../../../class/presentation/pages/class_page.dart';
-import '../../../class/presentation/pages/admin_class_page.dart';
 import '../../../community/presentation/pages/community_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -22,7 +20,6 @@ class _HomePageState extends ConsumerState<HomePage> {
   bool _isProfileMode = false;
   bool _isSettingsMode = false;
   bool _isCommunityMode = false;
-  bool _isQuizzesMode = false;
   bool _cameFromSettings = false;
 
   Widget _buildBody() {
@@ -35,15 +32,10 @@ class _HomePageState extends ConsumerState<HomePage> {
     if (_isCommunityMode) {
       return _communityBody();
     }
-    if (_isQuizzesMode) {
-      return _quizzesBody();
-    }
     switch (_currentIndex) {
       case 0:
         return _homeBody();
       case 1:
-        return const ClassPage();
-      case 2:
         return const CommunityPage();
       default:
         return _homeBody();
@@ -166,20 +158,6 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           ),
           const SizedBox(height: 10),
-          // Quizzes Panel component
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.quiz),
-              title: const Text('Quizzes Panel'),
-              subtitle: const Text('Manage quizzes'),
-              onTap: () => setState(() {
-                _isQuizzesMode = true;
-                _isSettingsMode = false;
-                _cameFromSettings = true;
-              }),
-            ),
-          ),
-          const SizedBox(height: 20),
           // Here you can add more configuration options
         ],
       ),
@@ -192,35 +170,29 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  Widget _quizzesBody() {
-    return const ClassAdminPage();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: HeaderWidget(
-        leading: _isProfileMode || _isSettingsMode || _isCommunityMode || _isQuizzesMode
+        leading: _isProfileMode || _isSettingsMode || _isCommunityMode
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () => setState(() {
-                  if ((_isProfileMode || _isCommunityMode || _isQuizzesMode) && _cameFromSettings) {
+                  if ((_isProfileMode || _isCommunityMode) && _cameFromSettings) {
                     _isProfileMode = false;
                     _isCommunityMode = false;
-                    _isQuizzesMode = false;
                     _isSettingsMode = true;
                     _cameFromSettings = false;
                   } else {
                     _isProfileMode = false;
                     _isSettingsMode = false;
                     _isCommunityMode = false;
-                    _isQuizzesMode = false;
                     _cameFromSettings = false;
                   }
                 }),
               )
             : null,
-        onLeadingTap: (_isProfileMode || _isSettingsMode || _isCommunityMode || _isQuizzesMode) ? null : () => setState(() => _isSettingsMode = true),
+        onLeadingTap: (_isProfileMode || _isSettingsMode || _isCommunityMode) ? null : () => setState(() => _isSettingsMode = true),
       ),
       body: _buildBody(),
       bottomNavigationBar: BottomNavigationWidget(
@@ -231,7 +203,6 @@ class _HomePageState extends ConsumerState<HomePage> {
             _isProfileMode = false; // Reset profile mode when navigating
             _isSettingsMode = false; // Reset settings mode when navigating
             _isCommunityMode = false; // Reset community mode when navigating
-            _isQuizzesMode = false; // Reset quizzes mode when navigating
             _cameFromSettings = false; // Reset came from settings
           });
         },

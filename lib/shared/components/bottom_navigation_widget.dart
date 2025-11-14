@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Bottom navigation bar matching the provided screenshot:
-/// - Three items: Home, Class, Community
+/// - Two items: Home, Community
 /// - Icon above label, centered, tappable
 class BottomNavigationWidget extends StatelessWidget {
   final int currentIndex;
@@ -53,8 +53,7 @@ class BottomNavigationWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _buildItem(icon: Icons.home_outlined, label: 'Home', index: 0),
-            _buildItem(icon: Icons.school, label: 'Join', index: 1),
-            _buildItem(icon: Icons.people_outline, label: 'Community', index: 2),
+            _buildItem(icon: Icons.people_outline, label: 'Community', index: 1),
           ],
         ),
       ),
