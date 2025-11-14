@@ -15,7 +15,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'LevelUp Journey',
       theme: ThemeData(useMaterial3: true),
-  home: const WelcomePage(),
+      debugShowCheckedModeBanner: false,
+      home: const WelcomePage(),
     );
   }
 }
