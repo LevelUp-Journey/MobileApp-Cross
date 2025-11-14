@@ -15,9 +15,9 @@ void main() {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
-    // Verify that the login page is shown
-    expect(find.text('Iniciar Sesión'), findsOneWidget);
-    expect(find.text('Bienvenido de vuelta'), findsOneWidget);
-    expect(find.text('Inicia sesión en tu cuenta'), findsOneWidget);
+    // Verify that the welcome page is shown
+    expect(find.text('Level Up Journey'), findsOneWidget);
+    expect(find.text('Create Account'), findsOneWidget);
+    expect(find.text('Sign In'), findsOneWidget);
   });
 }

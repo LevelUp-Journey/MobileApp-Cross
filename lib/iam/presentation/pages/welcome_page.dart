@@ -37,9 +37,16 @@ class WelcomePage extends StatelessWidget {
                               children: [
                                 const LogoWidget(size: 56),
                                 const SizedBox(width: 12),
-                                Text(
-                                  'Level Up Journey',
-                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+                                Flexible(
+                                  child: Text(
+                                    'Level Up Journey',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(fontWeight: FontWeight.w600),
+                                  ),
                                 ),
                               ],
                             ),
@@ -57,11 +64,12 @@ class WelcomePage extends StatelessWidget {
                             const SizedBox(height: 28),
 
                             // Helper text
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
+                            Wrap(
+                              alignment: WrapAlignment.center,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: 4,
                               children: [
-                                const Text('Already have an account? '),
+                                const Text('Already have an account?'),
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginPage()));

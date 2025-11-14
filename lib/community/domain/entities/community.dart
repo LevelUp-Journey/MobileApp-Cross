@@ -7,6 +7,7 @@ class Community {
   final String description;
   final String? imageUrl;
   final DateTime createdAt;
+  final int? followerCount;
 
   const Community({
     required this.id,
@@ -16,6 +17,7 @@ class Community {
     required this.description,
     this.imageUrl,
     required this.createdAt,
+    this.followerCount,
   });
 
   @override
