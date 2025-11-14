@@ -39,7 +39,10 @@ class PostController extends Notifier<PostState> {
     try {
       final useCase = ref.read(getPostsByCommunityUseCaseProvider);
       final token = _requireToken();
-      final query = CommunityPostsQuery(communityId: communityId, pagination: pagination);
+      final query = CommunityPostsQuery(
+        communityId: communityId,
+        pagination: pagination,
+      );
       final page = await useCase.execute(query, token: token);
       state = state.copyWith(
         loading: false,
@@ -63,12 +66,18 @@ class PostController extends Notifier<PostState> {
     }
   }
 
-  Future<void> fetchFeedPosts(String userId, {OffsetQuery offset = const OffsetQuery()}) async {
+  Future<void> fetchFeedPosts(
+    String userId, {
+    OffsetQuery offset = const OffsetQuery(),
+  }) async {
     state = state.copyWith(loading: true, error: null);
     try {
       final useCase = ref.read(getFeedPostsUseCaseProvider);
       final token = _requireToken();
-      final posts = await useCase.execute(FeedPostsQuery(userId: userId, offsetQuery: offset), token: token);
+      final posts = await useCase.execute(
+        FeedPostsQuery(userId: userId, offsetQuery: offset),
+        token: token,
+      );
       state = state.copyWith(loading: false, feedPosts: posts);
     } catch (error) {
       state = state.copyWith(loading: false, error: error.toString());
@@ -81,12 +90,17 @@ class PostController extends Notifier<PostState> {
       final useCase = ref.read(createPostUseCaseProvider);
       final token = _requireToken();
       final authorId = _requireUserId();
-      final post = await useCase.execute(authorId: authorId, request: request, token: token);
+      final post = await useCase.execute(
+        authorId: authorId,
+        request: request,
+        token: token,
+      );
 
       final updatedAllPosts = <Post>[post, ...state.allPosts];
       state = state.copyWith(processing: false, allPosts: updatedAllPosts);
 
-      if (state.communityIdForPage == post.communityId && state.communityPosts != null) {
+      if (state.communityIdForPage == post.communityId &&
+          state.communityPosts != null) {
         final existing = state.communityPosts!;
         final updatedItems = <Post>[post, ...existing.items];
         state = state.copyWith(
@@ -141,6 +155,60 @@ class PostController extends Notifier<PostState> {
     final userId = authState.user?.id;
     if (userId == null) throw Exception('User not authenticated');
     return userId;
+  }
+
+  void updatePostReaction(String postId, {required bool isLiked}) {
+    state = state.copyWith(
+      allPosts: _updatePostInList(state.allPosts, postId, isLiked),
+      feedPosts: _updatePostInList(state.feedPosts, postId, isLiked),
+      userPosts: _updatePostInList(state.userPosts, postId, isLiked),
+      communityPosts: _updatePostInPaginatedResult(
+        state.communityPosts,
+        postId,
+        isLiked,
+      ),
+      overrideCommunityPosts: true,
+    );
+  }
+
+  List<Post> _updatePostInList(List<Post> posts, String postId, bool isLiked) {
+    return posts.map((post) {
+      if (post.id == postId) {
+        return Post(
+          id: post.id,
+          communityId: post.communityId,
+          authorId: post.authorId,
+          content: post.content,
+          imageUrl: post.imageUrl,
+          createdAt: post.createdAt,
+          updatedAt: post.updatedAt,
+          reactionCount: isLiked
+              ? post.reactionCount + 1
+              : (post.reactionCount > 0 ? post.reactionCount - 1 : 0),
+          viewerHasReacted: isLiked,
+          author: post.author,
+          community: post.community,
+        );
+      }
+      return post;
+    }).toList();
+  }
+
+  PaginatedResult<Post>? _updatePostInPaginatedResult(
+    PaginatedResult<Post>? current,
+    String postId,
+    bool isLiked,
+  ) {
+    if (current == null) return null;
+    final updatedItems = _updatePostInList(current.items, postId, isLiked);
+    return PaginatedResult<Post>(
+      items: updatedItems,
+      page: current.page,
+      size: current.size,
+      totalElements: current.totalElements,
+      hasNext: current.hasNext,
+      hasPrevious: current.hasPrevious,
+    );
   }
 
   PaginatedResult<Post>? _removePostFromCommunityPage(String postId) {

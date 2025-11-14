@@ -19,19 +19,24 @@ class RestSubscriptionRepository implements SubscriptionRepository {
   }) async {
     final dto = await _remote.createSubscription(
       token: token,
-      userId: userId,
       request: request,
     );
     return dto.toDomain();
   }
 
   @override
-  Future<bool> deleteSubscription(String subscriptionId, {required String token}) {
+  Future<bool> deleteSubscription(
+    String subscriptionId, {
+    required String token,
+  }) {
     return _remote.deleteSubscription(subscriptionId, token);
   }
 
   @override
-  Future<List<Subscription>> getSubscriptionsByCommunity(String communityId, {required String token}) async {
+  Future<List<Subscription>> getSubscriptionsByCommunity(
+    String communityId, {
+    required String token,
+  }) async {
     final dtos = await _remote.getSubscriptionsByCommunity(communityId, token);
     return dtos.map((dto) => dto.toDomain()).toList();
   }
