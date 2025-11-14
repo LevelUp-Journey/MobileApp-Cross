@@ -11,23 +11,21 @@ import '../dtos/subscription_dto.dart';
 
 class SubscriptionRemoteDataSource extends BaseService {
   SubscriptionRemoteDataSource(http.Client client, {required String baseUrl})
-      : super(client, baseUrl: baseUrl);
+    : super(client, baseUrl: baseUrl);
 
   Future<SubscriptionDto> createSubscription({
     required String token,
-    required String userId,
     required CreateSubscriptionRequest request,
   }) async {
     final response = await client.post(
       buildUri(Environment.subscriptionsEndpoint),
       headers: authorizedHeaders(token),
-      body: jsonEncode({
-        'communityId': request.communityId,
-        'userId': userId,
-      }),
+      body: jsonEncode({'communityId': request.communityId}),
     );
     ensureSuccess(response, allowedStatusCodes: const [200, 201]);
-    return SubscriptionDto.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    return SubscriptionDto.fromJson(
+      jsonDecode(response.body) as Map<String, dynamic>,
+    );
   }
 
   Future<bool> deleteSubscription(String subscriptionId, String token) async {
@@ -44,14 +42,19 @@ class SubscriptionRemoteDataSource extends BaseService {
     return true;
   }
 
-  Future<List<SubscriptionDto>> getSubscriptionsByCommunity(String communityId, String token) async {
+  Future<List<SubscriptionDto>> getSubscriptionsByCommunity(
+    String communityId,
+    String token,
+  ) async {
     final response = await client.get(
       buildUri(Environment.subscriptionsByCommunity(communityId)),
       headers: authorizedHeaders(token),
     );
     ensureSuccess(response, allowedStatusCodes: const [200]);
     final data = jsonDecode(response.body) as List<dynamic>;
-    return data.map((json) => SubscriptionDto.fromJson(json as Map<String, dynamic>)).toList();
+    return data
+        .map((json) => SubscriptionDto.fromJson(json as Map<String, dynamic>))
+        .toList();
   }
 
   Future<PaginatedResponseDto<SubscriptionDto>> getSubscriptionsByUser(

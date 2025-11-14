@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../controllers/providers.dart';
 import '../widgets/community_card.dart';
+import 'community_detail_page.dart';
 
 class CommunityPage extends ConsumerStatefulWidget {
   const CommunityPage({super.key});
@@ -136,10 +137,13 @@ class _CommunityPageState extends ConsumerState<CommunityPage> {
           return CommunityCard(
             community: community,
             onTap: () {
-              // TODO: Navigate to community detail page
-              ScaffoldMessenger.of(
+              Navigator.push(
                 context,
-              ).showSnackBar(SnackBar(content: Text('Open ${community.name}')));
+                MaterialPageRoute(
+                  builder: (context) =>
+                      CommunityDetailPage(community: community),
+                ),
+              );
             },
           );
         },
