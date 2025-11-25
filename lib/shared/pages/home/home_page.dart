@@ -5,8 +5,6 @@ import '../../../iam/presentation/controllers/providers.dart';
 import '../../../iam/presentation/pages/login_page.dart';
 import '../../components/appbar_widget.dart';
 import '../../components/bottom_navigation_widget.dart';
-import '../../../profiles/presentation/pages/profile_page.dart';
-import '../../../community/presentation/pages/community_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -17,29 +15,13 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   int _currentIndex = 0;
-  bool _isProfileMode = false;
   bool _isSettingsMode = false;
-  bool _isCommunityMode = false;
-  bool _cameFromSettings = false;
 
   Widget _buildBody() {
-    if (_isProfileMode) {
-      return const ProfilePage(); // Use the profile page content
-    }
     if (_isSettingsMode) {
       return _settingsBody();
     }
-    if (_isCommunityMode) {
-      return _communityBody();
-    }
-    switch (_currentIndex) {
-      case 0:
-        return _homeBody();
-      case 1:
-        return const CommunityPage();
-      default:
-        return _homeBody();
-    }
+    return _homeBody();
   }
 
   Widget _homeBody() {
@@ -130,43 +112,9 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           ),
           const SizedBox(height: 20),
-          // Profile component
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Profile'),
-              subtitle: const Text('View and edit your profile'),
-              onTap: () => setState(() {
-                _isProfileMode = true;
-                _isSettingsMode = false;
-                _cameFromSettings = true;
-              }),
-            ),
-          ),
-          const SizedBox(height: 10),
-          // Community Panel component
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.people),
-              title: const Text('Community Panel'),
-              subtitle: const Text('Manage community settings'),
-              onTap: () => setState(() {
-                _isCommunityMode = true;
-                _isSettingsMode = false;
-                _cameFromSettings = true;
-              }),
-            ),
-          ),
-          const SizedBox(height: 10),
           // Here you can add more configuration options
         ],
       ),
-    );
-  }
-
-  Widget _communityBody() {
-    return const Center(
-      child: Text('Community Content'),
     );
   }
 
@@ -174,38 +122,18 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: HeaderWidget(
-        leading: _isProfileMode || _isSettingsMode || _isCommunityMode
+        leading: _isSettingsMode
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => setState(() {
-                  if ((_isProfileMode || _isCommunityMode) && _cameFromSettings) {
-                    _isProfileMode = false;
-                    _isCommunityMode = false;
-                    _isSettingsMode = true;
-                    _cameFromSettings = false;
-                  } else {
-                    _isProfileMode = false;
-                    _isSettingsMode = false;
-                    _isCommunityMode = false;
-                    _cameFromSettings = false;
-                  }
-                }),
+                onPressed: () => setState(() => _isSettingsMode = false),
               )
             : null,
-        onLeadingTap: (_isProfileMode || _isSettingsMode || _isCommunityMode) ? null : () => setState(() => _isSettingsMode = true),
+        onLeadingTap: _isSettingsMode ? null : () => setState(() => _isSettingsMode = true),
       ),
       body: _buildBody(),
       bottomNavigationBar: BottomNavigationWidget(
         currentIndex: _currentIndex,
-        onTap: (i) {
-          setState(() {
-            _currentIndex = i;
-            _isProfileMode = false; // Reset profile mode when navigating
-            _isSettingsMode = false; // Reset settings mode when navigating
-            _isCommunityMode = false; // Reset community mode when navigating
-            _cameFromSettings = false; // Reset came from settings
-          });
-        },
+        onTap: (i) => setState(() => _currentIndex = i),
       ),
     );
   }

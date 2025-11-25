@@ -23,13 +23,13 @@ class Environment {
 
   static String communityById(String communityId) => '$getAllCommunitiesEndpoint/$communityId';
   static String communitiesByCreator(String creatorId) => '$getCommunitiesByCreatorEndpoint/$creatorId';
-  static String postsByCommunity(String communityId) => '${postsEndpoint}/community/$communityId';
-  static String postsFeed(String userId) => '${postsEndpoint}/feed/$userId';
+  static String postsByCommunity(String communityId) => '$postsEndpoint/community/$communityId';
+  static String postsFeed(String userId) => '$postsEndpoint/feed/$userId';
   static String feedByUser(String userId) => '$feedEndpoint/$userId';
-  static String reactionsByPost(String postId) => '${reactionsEndpoint}/post/$postId';
-  static String reactionForUserPost(String userId, String postId) => '${reactionsEndpoint}/user/$userId/post/$postId';
-  static String subscriptionsByCommunity(String communityId) => '${subscriptionsEndpoint}/community/$communityId';
-  static String subscriptionsByUser(String userId) => '${subscriptionsEndpoint}/user/$userId';
+  static String reactionsByPost(String postId) => '$reactionsEndpoint/post/$postId';
+  static String reactionForUserPost(String userId, String postId) => '$reactionsEndpoint/user/$userId/post/$postId';
+  static String subscriptionsByCommunity(String communityId) => '$subscriptionsEndpoint/community/$communityId';
+  static String subscriptionsByUser(String userId) => '$subscriptionsEndpoint/user/$userId';
 
 
 }
